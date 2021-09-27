@@ -26,10 +26,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  */
 
 plugins {
-	val kotlinVersion = "1.4.20"
+	val kotlinVersion = "1.5.21"
 	kotlin("jvm") version kotlinVersion
 	kotlin("kapt") version kotlinVersion
-	//id("org.jetbrains.dokka") version kotlinVersion
 	signing
 	`maven-publish`
 }
@@ -63,8 +62,16 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
 	// test
-	testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.0")
+	val junitVer = "5.8.1"
+	testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVer")
+	testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVer")
 }
+
+tasks.withType<Test> {
+	useJUnitPlatform()
+}
+
+
 
 publishing {
 	publications {
@@ -119,12 +126,6 @@ signing {
 	sign(publishing.publications["maven"])
 }
 
-//tasks.register<Jar>("dokkaJar") {
-//	archiveClassifier.set("javadoc")
-//	dependsOn("dokkaJavadoc")
-//	from("$buildDir/dokka/javadoc/")
-//}
-
 tasks.withType<Javadoc>().configureEach {
 	options {
 		this as StandardJavadocDocletOptions
@@ -139,6 +140,3 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
-}
