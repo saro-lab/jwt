@@ -6,12 +6,14 @@ import me.saro.jwt.model.ClaimName
 import me.saro.jwt.model.KeyChain
 import java.util.*
 
-class JwtBuilder(
+class JwtBuilder constructor(
     private val signatureAlgorithm: SignatureAlgorithm,
     private val keyChain: KeyChain,
-    private val header: MutableMap<String, Any> = mutableMapOf(),
-    private val claims: MutableMap<String, Any> = mutableMapOf()
+    private val header: MutableMap<String, Any>,
+    private val claims: MutableMap<String, Any>
 ) {
+    constructor(signatureAlgorithm: SignatureAlgorithm, keyChain: KeyChain): this(signatureAlgorithm, keyChain, mutableMapOf(), mutableMapOf())
+
     fun header(key: String, value: Any): JwtBuilder {
         when (key) {
             "kid", "alg", "" -> throw IllegalArgumentException("[$key] has not allow header key name")
@@ -25,6 +27,7 @@ class JwtBuilder(
             when (name) {
                 "exp" -> throw IllegalArgumentException("use setExpire*() instead of claim(\"exp\")")
                 "iat" -> throw IllegalArgumentException("use setIssuedAtNow() instead of claim(\"iat\")")
+                "" -> throw IllegalArgumentException("name must not empty")
             }
         }
         claims[name] = value
@@ -64,5 +67,9 @@ class JwtBuilder(
     init {
         header["kid"] = keyChain.kid
         header["alg"] = signatureAlgorithm
+
+        if (signatureAlgorithm != keyChain.algorithm) {
+            throw IllegalArgumentException("signatureAlgorithm and keyChain.algorithm does not match algorithm")
+        }
     }
 }
