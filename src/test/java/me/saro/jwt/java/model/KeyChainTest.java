@@ -1,4 +1,4 @@
-package me.saro.kotlin.java.model;
+package me.saro.jwt.java.model;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import me.saro.jwt.model.KeyChain;

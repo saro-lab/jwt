@@ -1,4 +1,4 @@
-package me.saro.kotlin.java.impl;
+package me.saro.jwt.java.impl;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import me.saro.jwt.JwtKeyManager;

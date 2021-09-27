@@ -1,4 +1,4 @@
-package me.saro.kotlin.java;
+package me.saro.jwt.java;
 
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.lang.SecurityException;
