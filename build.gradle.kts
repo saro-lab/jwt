@@ -35,7 +35,7 @@ plugins {
 
 val jwtGroupId = "me.saro"
 val jwtArtifactId = "jwt"
-val jwtVersion = "0.11.2.0"
+val jwtVersion = "0.11.2.1"
 
 configure<JavaPluginExtension> {
 	sourceCompatibility = JavaVersion.VERSION_1_8
@@ -57,7 +57,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	// jsonwebtoken jwt
-	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+	api("io.jsonwebtoken:jjwt-api:0.11.2")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
@@ -70,8 +70,6 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
-
-
 
 publishing {
 	publications {
@@ -139,4 +137,3 @@ tasks.withType<KotlinCompile> {
 		jvmTarget = "1.8"
 	}
 }
-
