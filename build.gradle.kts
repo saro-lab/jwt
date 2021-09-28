@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
  */
 
 plugins {
-	val kotlinVersion = "1.5.21"
+	val kotlinVersion = "1.5.31"
 	kotlin("jvm") version kotlinVersion
 	kotlin("kapt") version kotlinVersion
 	signing
@@ -35,7 +35,8 @@ plugins {
 
 val jwtGroupId = "me.saro"
 val jwtArtifactId = "jwt"
-val jwtVersion = "0.11.2.1"
+val jwtApiVersion = "0.11.2"
+val jwtVersion = "$jwtApiVersion.1"
 
 configure<JavaPluginExtension> {
 	sourceCompatibility = JavaVersion.VERSION_1_8
@@ -57,9 +58,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	// jsonwebtoken jwt
-	api("io.jsonwebtoken:jjwt-api:0.11.2")
-	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
-	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
+	api("io.jsonwebtoken:jjwt-api:$jwtApiVersion")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtApiVersion")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtApiVersion")
 
 	// test
 	val junitVer = "5.8.1"
