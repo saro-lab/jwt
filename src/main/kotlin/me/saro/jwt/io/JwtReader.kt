@@ -18,10 +18,10 @@ class JwtReader(
     fun claim(name: ClaimName): Any? =
         claim(name.value)
 
-    fun decryptClaim(name: String): Any? =
+    fun decryptClaim(name: String): String? =
         jwt.body[name]
             ?.run { keyChain.decrypt(this.toString()) }
 
-    fun decryptClaim(name: ClaimName): Any? =
+    fun decryptClaim(name: ClaimName): String? =
         decryptClaim(name.value)
 }

@@ -16,21 +16,24 @@ class MainTest {
         val name = "안녕 hello !@#$"
         val encode = "안녕 hello !@#$"
         val jwtKeyManager: JwtKeyManager = create(SignatureAlgorithm.RS256)
-        val builder = jwtKeyManager.getJwtBuilder()
-        builder.claim("name", name)
-        builder.encryptClaim("encode", encode)
-        builder.setIssuedAtNow()
-        builder.setExpireMinutes(30)
-        builder.claim(ClaimName.id, "id")
-        builder.claim(ClaimName.subject, "sub")
-        builder.claim(ClaimName.issuer, "iss")
-        val jwt = builder.build()
-        println("- JWT")
-        println(jwt)
-        println("- header / payload")
-        jwt.split(".").stream().limit(2)
-            .map { e: String -> String(Base64.getDecoder().decode(e.replace('-', '+').replace('_', '/'))) }
-            .forEach { x: String? -> println(x) }
+        val jwt = jwtKeyManager.getJwtBuilder()
+            .claim("name", name)
+            .encryptClaim("encode", encode)
+            .setIssuedAtNow()
+            .setExpireMinutes(30)
+            .claim(ClaimName.id, "id")
+            .claim(ClaimName.subject, "sub")
+            .claim(ClaimName.issuer, "iss")
+            .build()
+
+        println("jwt: $jwt")
+
+        val header = String(Base64.getDecoder().decode(jwt.split(".")[0]))
+        println("header: $header")
+
+        val payload = String(Base64.getDecoder().decode(jwt.split(".")[1]))
+        println("payload: $payload")
+
         val jwtReader = jwtKeyManager.parse(jwt)
         Assertions.assertEquals(jwtReader.claim("name").toString(), name)
         Assertions.assertEquals(jwtReader.decryptClaim("encode").toString(), encode)
@@ -49,5 +52,39 @@ class MainTest {
             val reader = m2.parse(jwt)
             println(reader.claim("text"))
         }
+    }
+
+
+    @Test
+    fun `example`() {
+        // algorithm: RS256, key rotation queue size: 3, key rotation minutes: 30
+        // key stored [rotation minutes (30) * queue size (3)] = 90 minutes
+        val jwtKeyManager: JwtKeyManager = create(SignatureAlgorithm.RS256, 3, 30)
+
+        val jwt = jwtKeyManager.getJwtBuilder()
+            .encryptClaim(ClaimName.id, "1234")
+            .claim(ClaimName.subject, "sub")
+            .claim(ClaimName.issuer, "iss")
+            .setIssuedAtNow()
+            .setExpireMinutes(30)
+            .build()
+        println("jwt: $jwt")
+
+        val header = String(Base64.getDecoder().decode(jwt.split(".")[0]))
+        println("header: $header")
+
+        val payload = String(Base64.getDecoder().decode(jwt.split(".")[1]))
+        println("payload: $payload")
+
+        val jwtReader = jwtKeyManager.parse(jwt)
+
+        val result = mapOf(
+            "id" to jwtReader.decryptClaim(ClaimName.id),
+            "subject" to jwtReader.claim(ClaimName.subject),
+            "issuer" to jwtReader.claim(ClaimName.issuer),
+            "issuedAt" to jwtReader.claim("iat"),
+            "expire" to jwtReader.claim("exp")
+        )
+        println("result: $result")
     }
 }

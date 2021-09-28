@@ -1,18 +1,17 @@
 package me.saro.jwt.java;
 
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.lang.SecurityException;
 import me.saro.jwt.JwtKeyManager;
 import me.saro.jwt.impl.DefaultJwtKeyManager;
-import me.saro.jwt.io.JwtBuilder;
 import me.saro.jwt.io.JwtReader;
 import me.saro.jwt.model.ClaimName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 @DisplayName("[Java] JwtReader")
 public class MainTest {
@@ -23,27 +22,28 @@ public class MainTest {
         String encode = "안녕 hello !@#$";
 
         JwtKeyManager jwtKeyManager = DefaultJwtKeyManager.create(SignatureAlgorithm.RS256);
-        JwtBuilder builder = jwtKeyManager.getJwtBuilder();
-        builder.claim("name", name);
-        builder.encryptClaim("encode", encode);
-        builder.setIssuedAtNow();
-        builder.setExpireMinutes(30);
-        builder.claim(ClaimName.id, "id");
-        builder.claim(ClaimName.subject, "sub");
-        builder.claim(ClaimName.issuer, "iss");
-        String jwt = builder.build();
+        String jwt = jwtKeyManager.getJwtBuilder()
+            .claim("name", name)
+            .encryptClaim("encode", encode)
+            .setIssuedAtNow()
+            .setExpireMinutes(30)
+            .claim(ClaimName.id, "id")
+            .claim(ClaimName.subject, "sub")
+            .claim(ClaimName.issuer, "iss")
+            .build();
 
-        System.out.println("- JWT");
-        System.out.println(jwt);
-        System.out.println("- header / payload");
-        Arrays.asList(jwt.split("\\.")).stream().limit(2)
-                .map(e -> new String(Base64.getDecoder().decode(e.replace('-', '+').replace('_', '/'))))
-                .forEach(System.out::println);
+        System.out.println("jwt: " + jwt);
+
+        String header = new String(Base64.getDecoder().decode(jwt.split("\\.")[0]));
+        System.out.println("header: " + header);
+
+        String payload = new String(Base64.getDecoder().decode(jwt.split("\\.")[1]));
+        System.out.println("payload: " + payload);
 
         JwtReader jwtReader = jwtKeyManager.parse(jwt);
 
         Assertions.assertEquals(jwtReader.claim("name").toString(), name);
-        Assertions.assertEquals(jwtReader.decryptClaim("encode").toString(), encode);
+        Assertions.assertEquals(jwtReader.decryptClaim("encode"), encode);
     }
 
     @Test
@@ -63,5 +63,39 @@ public class MainTest {
             JwtReader reader = m2.parse(jwt);
             System.out.println(reader.claim("text"));
         });
+    }
+
+    @Test
+    @DisplayName("example")
+    public void t0() {
+        // algorithm: RS256, key rotation queue size: 3, key rotation minutes: 30
+        // key stored [rotation minutes (30) * queue size (3)] = 90 minutes
+        JwtKeyManager jwtKeyManager = DefaultJwtKeyManager.create(SignatureAlgorithm.RS256, 3, 30);
+
+        String jwt = jwtKeyManager.getJwtBuilder()
+            .encryptClaim(ClaimName.id, "1234")
+            .claim(ClaimName.subject, "sub")
+            .claim(ClaimName.issuer, "iss")
+            .setIssuedAtNow()
+            .setExpireMinutes(30)
+            .build();
+
+        System.out.println("jwt: " + jwt);
+
+        String header = new String(Base64.getDecoder().decode(jwt.split("\\.")[0]));
+        System.out.println("header: " + header);
+
+        String payload = new String(Base64.getDecoder().decode(jwt.split("\\.")[1]));
+        System.out.println("payload: " + payload);
+
+        JwtReader jwtReader = jwtKeyManager.parse(jwt);
+
+        Map<String, String> result = new HashMap<>();
+        result.put("id", jwtReader.decryptClaim(ClaimName.id));
+        result.put("subject", jwtReader.claim(ClaimName.subject).toString());
+        result.put("issuer", jwtReader.claim(ClaimName.issuer).toString());
+        result.put("issuedAt", jwtReader.claim("iat").toString());
+        result.put("expire", jwtReader.claim("exp").toString());
+        System.out.println("result: " + result);
     }
 }
