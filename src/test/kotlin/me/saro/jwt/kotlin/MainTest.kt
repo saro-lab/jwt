@@ -3,27 +3,26 @@ package me.saro.jwt.kotlin
 import io.jsonwebtoken.SignatureAlgorithm
 import me.saro.jwt.JwtKeyManager
 import me.saro.jwt.impl.DefaultJwtKeyManager.Companion.create
-import me.saro.jwt.model.ClaimName
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.util.*
 
-@DisplayName("[Kotlin] JwtReader")
+@DisplayName("[Kotlin] MainTest")
 class MainTest {
     @Test
-    fun `normal`() {
+    fun normal() {
         val name = "안녕 hello !@#$"
         val encode = "안녕 hello !@#$"
         val jwtKeyManager: JwtKeyManager = create(SignatureAlgorithm.RS256)
         val jwt = jwtKeyManager.getJwtBuilder()
             .claim("name", name)
             .encryptClaim("encode", encode)
-            .setIssuedAtNow()
-            .setExpireMinutes(30)
-            .claim(ClaimName.id, "id")
-            .claim(ClaimName.subject, "sub")
-            .claim(ClaimName.issuer, "iss")
+            .issuedAtNow()
+            .expireMinutes(30)
+            .id("id")
+            .subject("sub")
+            .issuer("iss")
             .build()
 
         println("jwt: $jwt")
@@ -35,8 +34,8 @@ class MainTest {
         println("payload: $payload")
 
         val jwtReader = jwtKeyManager.parse(jwt)
-        Assertions.assertEquals(jwtReader.claim("name").toString(), name)
-        Assertions.assertEquals(jwtReader.decryptClaim("encode").toString(), encode)
+        Assertions.assertEquals(name, jwtReader.claim("name"))
+        Assertions.assertEquals(encode, jwtReader.decryptClaim("encode"))
     }
 
     @Test
@@ -56,17 +55,17 @@ class MainTest {
 
 
     @Test
-    fun `example`() {
+    fun example() {
         // algorithm: RS256, key rotation queue size: 3, key rotation minutes: 30
         // key stored [rotation minutes (30) * queue size (3)] = 90 minutes
         val jwtKeyManager: JwtKeyManager = create(SignatureAlgorithm.RS256, 3, 30)
 
         val jwt = jwtKeyManager.getJwtBuilder()
-            .encryptClaim(ClaimName.id, "1234")
-            .claim(ClaimName.subject, "sub")
-            .claim(ClaimName.issuer, "iss")
-            .setIssuedAtNow()
-            .setExpireMinutes(30)
+            .encryptClaim("jti", "1234")
+            .subject("sub")
+            .issuer("iss")
+            .issuedAtNow()
+            .expireMinutes(30)
             .build()
         println("jwt: $jwt")
 
@@ -79,11 +78,11 @@ class MainTest {
         val jwtReader = jwtKeyManager.parse(jwt)
 
         val result = mapOf(
-            "id" to jwtReader.decryptClaim(ClaimName.id),
-            "subject" to jwtReader.claim(ClaimName.subject),
-            "issuer" to jwtReader.claim(ClaimName.issuer),
-            "issuedAt" to jwtReader.claim("iat"),
-            "expire" to jwtReader.claim("exp")
+            "id" to jwtReader.decryptClaim("jti"),
+            "subject" to jwtReader.subject,
+            "issuer" to jwtReader.issuer,
+            "issuedAt" to jwtReader.issuedAt,
+            "expire" to jwtReader.expire
         )
         println("result: $result")
     }

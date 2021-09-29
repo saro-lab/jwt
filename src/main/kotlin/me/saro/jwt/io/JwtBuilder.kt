@@ -2,7 +2,6 @@ package me.saro.jwt.io
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import me.saro.jwt.model.ClaimName
 import me.saro.jwt.model.KeyChain
 import java.util.*
 
@@ -37,23 +36,38 @@ class JwtBuilder constructor(
     fun claim(name: String, value: Any): JwtBuilder =
         claim(name, value, check = true)
 
-    fun claim(name: ClaimName, value: Any): JwtBuilder =
-        claim(name.value, value, check = true)
-
     fun encryptClaim(name: String, value: String): JwtBuilder =
         claim(name, keyChain.encrypt(value), check = true)
 
-    fun encryptClaim(name: ClaimName, value: String): JwtBuilder =
-        claim(name.value, keyChain.encrypt(value), check = true)
+    fun id(jti: String) =
+        claim("jti", jti)
 
-    fun setIssuedAtNow() =
-        claim("iat", Date().time / 1000, check = false)
+    fun issuer(iss: String) =
+        claim("iss", iss)
 
-    fun setExpireSeconds(seconds: Int) =
+    fun subject(sub: String) =
+        claim("sub", sub)
+
+    fun audience(aud: String) =
+        claim("aud", aud)
+
+    fun notBefore(nbf: Date) =
+        claim("nbf", nbf.time / 1000)
+
+    fun expire(date: Date) =
+        claim("exp", date.time / 1000, check = false)
+
+    fun expireSeconds(seconds: Int) =
         claim("exp", (Date().time / 1000) + seconds, check = false)
 
-    fun setExpireMinutes(minutes: Int) =
-        setExpireSeconds(minutes * 60)
+    fun expireMinutes(minutes: Int) =
+        expireSeconds(minutes * 60)
+
+    fun issuedAt(date: Date) =
+        claim("iat", date.time / 1000, check = false)
+
+    fun issuedAtNow() =
+        claim("iat", Date().time / 1000, check = false)
 
     fun build(): String {
         val build = Jwts.builder()

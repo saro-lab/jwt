@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 @DisplayName("[Kotlin] JwtReader")
 class JwtReaderTest {
     @Test
-    fun `read`() {
+    fun read() {
         val name = "안녕 hello !@#$"
         val encode = "안녕 hello !@#$"
         val jwtKeyManager: JwtKeyManager = create(SignatureAlgorithm.RS256)
@@ -20,7 +20,7 @@ class JwtReaderTest {
         val jwt = builder.build()
         println(jwt)
         val jwtReader = jwtKeyManager.parse(jwt)
-        Assertions.assertEquals(jwtReader.claim("name").toString(), name)
-        Assertions.assertEquals(jwtReader.decryptClaim("encode").toString(), encode)
+        Assertions.assertEquals(name, jwtReader.claim("name"))
+        Assertions.assertEquals(encode, jwtReader.decryptClaim("encode"))
     }
 }

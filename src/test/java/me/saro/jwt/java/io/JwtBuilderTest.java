@@ -10,14 +10,6 @@ import org.junit.jupiter.api.Test;
 @DisplayName("[Java] JwtBuilder")
 public class JwtBuilderTest {
     @Test
-    @DisplayName("null check")
-    public void t0() {
-        Assertions.assertThrows(NullPointerException.class, () -> new JwtBuilder(null, null));
-        Assertions.assertThrows(NullPointerException.class, () -> new JwtBuilder(SignatureAlgorithm.RS256, null));
-        Assertions.assertThrows(NullPointerException.class, () -> new JwtBuilder(null, KeyChain.create(SignatureAlgorithm.RS256)));
-    }
-
-    @Test
     @DisplayName("arguments check")
     public void t2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new JwtBuilder(SignatureAlgorithm.RS384, KeyChain.create(SignatureAlgorithm.RS256)));

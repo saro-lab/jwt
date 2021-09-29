@@ -4,7 +4,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import me.saro.jwt.JwtKeyManager;
 import me.saro.jwt.impl.DefaultJwtKeyManager;
 import me.saro.jwt.io.JwtReader;
-import me.saro.jwt.model.ClaimName;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-@DisplayName("[Java] JwtReader")
+@DisplayName("[Java] MainTest")
 public class MainTest {
     @Test
     @DisplayName("normal")
@@ -25,11 +24,11 @@ public class MainTest {
         String jwt = jwtKeyManager.getJwtBuilder()
             .claim("name", name)
             .encryptClaim("encode", encode)
-            .setIssuedAtNow()
-            .setExpireMinutes(30)
-            .claim(ClaimName.id, "id")
-            .claim(ClaimName.subject, "sub")
-            .claim(ClaimName.issuer, "iss")
+            .issuedAtNow()
+            .expireMinutes(30)
+            .id("id")
+            .subject("sub")
+            .issuer("iss")
             .build();
 
         System.out.println("jwt: " + jwt);
@@ -42,7 +41,7 @@ public class MainTest {
 
         JwtReader jwtReader = jwtKeyManager.parse(jwt);
 
-        Assertions.assertEquals(jwtReader.claim("name").toString(), name);
+        Assertions.assertEquals(jwtReader.claim("name"), name);
         Assertions.assertEquals(jwtReader.decryptClaim("encode"), encode);
     }
 
@@ -56,12 +55,12 @@ public class MainTest {
 
         Assertions.assertDoesNotThrow(() -> {
             JwtReader reader = m1.parse(jwt);
-            System.out.println(reader.claim("text"));
+            System.out.println(reader.<String>claim("text"));
         });
 
         Assertions.assertThrows(SecurityException.class, () -> {
             JwtReader reader = m2.parse(jwt);
-            System.out.println(reader.claim("text"));
+            System.out.println(reader.<String>claim("text"));
         });
     }
 
@@ -73,11 +72,11 @@ public class MainTest {
         JwtKeyManager jwtKeyManager = DefaultJwtKeyManager.create(SignatureAlgorithm.RS256, 3, 30);
 
         String jwt = jwtKeyManager.getJwtBuilder()
-            .encryptClaim(ClaimName.id, "1234")
-            .claim(ClaimName.subject, "sub")
-            .claim(ClaimName.issuer, "iss")
-            .setIssuedAtNow()
-            .setExpireMinutes(30)
+            .encryptClaim("jti", "1234")
+            .subject("sub")
+            .issuer("iss")
+            .issuedAtNow()
+            .expireMinutes(30)
             .build();
 
         System.out.println("jwt: " + jwt);
@@ -90,12 +89,12 @@ public class MainTest {
 
         JwtReader jwtReader = jwtKeyManager.parse(jwt);
 
-        Map<String, String> result = new HashMap<>();
-        result.put("id", jwtReader.decryptClaim(ClaimName.id));
-        result.put("subject", jwtReader.claim(ClaimName.subject).toString());
-        result.put("issuer", jwtReader.claim(ClaimName.issuer).toString());
-        result.put("issuedAt", jwtReader.claim("iat").toString());
-        result.put("expire", jwtReader.claim("exp").toString());
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", jwtReader.decryptClaim("jti"));
+        result.put("subject", jwtReader.getSubject());
+        result.put("issuer", jwtReader.getIssuer());
+        result.put("issuedAt", jwtReader.getIssuedAt());
+        result.put("expire", jwtReader.getExpire());
         System.out.println("result: " + result);
     }
 }

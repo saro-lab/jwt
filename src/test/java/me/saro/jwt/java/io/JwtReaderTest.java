@@ -28,7 +28,7 @@ public class JwtReaderTest {
 
         JwtReader jwtReader = jwtKeyManager.parse(jwt);
 
-        Assertions.assertEquals(jwtReader.claim("name").toString(), name);
-        Assertions.assertEquals(jwtReader.decryptClaim("encode").toString(), encode);
+        Assertions.assertEquals(name, jwtReader.claim("name"));
+        Assertions.assertEquals(encode, jwtReader.decryptClaim("encode"));
     }
 }

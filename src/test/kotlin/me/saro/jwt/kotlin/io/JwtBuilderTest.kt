@@ -24,7 +24,7 @@ class JwtBuilderTest {
     }
 
     @Test
-    fun `build`() {
+    fun build() {
         Assertions.assertDoesNotThrow {
             val builder = JwtBuilder(SignatureAlgorithm.RS256, create(SignatureAlgorithm.RS256))
             builder.claim("name", "안녕")
