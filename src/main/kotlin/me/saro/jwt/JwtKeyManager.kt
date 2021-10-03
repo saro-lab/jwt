@@ -3,7 +3,6 @@ package me.saro.jwt
 import io.jsonwebtoken.*
 import me.saro.jwt.io.JwtBuilder
 import me.saro.jwt.io.JwtReader
-import me.saro.jwt.model.KeyChain
 import java.security.Key
 
 abstract class JwtKeyManager{
@@ -37,11 +36,11 @@ abstract class JwtKeyManager{
                 ?.let { findKeySet(it) }
                 ?: throw SecurityException("does not found kid in jwt")
 
-            if (header["alg"] as String? != keyChain.algorithm.name) {
+            if (header["alg"] as String? != keyChain.signatureAlgorithm.name) {
                 throw SecurityException("does not match algorithm: jwt.algorithm != keyChain.algorithm")
             }
 
-            return keyChain.keyPair.private
+            return keyChain.signaturePrivateKey
         }
     }
 }

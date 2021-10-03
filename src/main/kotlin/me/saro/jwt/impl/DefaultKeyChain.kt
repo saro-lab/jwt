@@ -1,45 +1,47 @@
-package me.saro.jwt.model
+package me.saro.jwt.impl
 
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import java.io.*
+import me.saro.jwt.KeyChain
+import java.io.ByteArrayOutputStream
+import java.io.ObjectOutputStream
 import java.security.KeyPair
+import java.security.PrivateKey
+import java.security.PublicKey
 import java.util.*
 import javax.crypto.Cipher
 
-data class KeyChain(
-    val kid: String,
-    val algorithm: SignatureAlgorithm,
-    val keyPair: KeyPair
-): Serializable {
+data class DefaultKeyChain(
+    override val kid: String,
+    override val signatureAlgorithm: SignatureAlgorithm,
+    private val keyPair: KeyPair
+): KeyChain {
     companion object {
         @JvmStatic
-        fun deserialize(serialize: ByteArray): KeyChain {
-            val bois = ByteArrayInputStream(serialize)
-            return bois.use { os -> ObjectInputStream(os).use { it.readObject() as KeyChain } }
-        }
-        @JvmStatic
         fun create(kid: String, algorithm: SignatureAlgorithm) =
-            KeyChain(kid, algorithm, Keys.keyPairFor(algorithm))
+            DefaultKeyChain(kid, algorithm, Keys.keyPairFor(algorithm))
 
         @JvmStatic
         fun create(algorithm: SignatureAlgorithm) =
             create(UUID.randomUUID().toString(), algorithm)
     }
 
-    fun encrypt(data: String): String =
+    override fun encrypt(data: String): String =
         Cipher.getInstance("RSA")
             .apply { init(Cipher.ENCRYPT_MODE, keyPair.private) }
             .run { Base64.getEncoder().encodeToString(doFinal(data.toByteArray())) }
 
-    fun decrypt(enc: String): String =
+    override fun decrypt(enc: String): String =
         Cipher.getInstance("RSA")
             .apply { init(Cipher.DECRYPT_MODE, keyPair.public) }
             .run { String(doFinal(Base64.getDecoder().decode(enc))) }
 
-    fun serialize(): ByteArray {
+    override fun serialize(): ByteArray {
         val baos = ByteArrayOutputStream()
         baos.use { os -> ObjectOutputStream(os).use { it.writeObject(this) } }
         return baos.toByteArray()
     }
+
+    override val signaturePrivateKey: PrivateKey get() = keyPair.private
+    override val signaturePublicKey: PublicKey get() = keyPair.public
 }

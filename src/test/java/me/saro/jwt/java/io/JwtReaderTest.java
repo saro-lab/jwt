@@ -5,7 +5,6 @@ import me.saro.jwt.JwtKeyManager;
 import me.saro.jwt.impl.DefaultJwtKeyManager;
 import me.saro.jwt.io.JwtBuilder;
 import me.saro.jwt.io.JwtReader;
-import me.saro.jwt.model.KeyChain;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

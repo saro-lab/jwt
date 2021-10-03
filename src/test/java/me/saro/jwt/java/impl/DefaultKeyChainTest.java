@@ -1,7 +1,8 @@
-package me.saro.jwt.java.model;
+package me.saro.jwt.java.impl;
 
 import io.jsonwebtoken.SignatureAlgorithm;
-import me.saro.jwt.model.KeyChain;
+import me.saro.jwt.KeyChain;
+import me.saro.jwt.impl.DefaultKeyChain;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,12 +10,12 @@ import org.junit.jupiter.api.Test;
 import java.security.GeneralSecurityException;
 
 @DisplayName("[Java] KeyChain")
-public class KeyChainTest {
+public class DefaultKeyChainTest {
     @Test
     @DisplayName("crypt success")
     public void t1() {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
-        KeyChain kc = KeyChain.create(signatureAlgorithm);
+        KeyChain kc = DefaultKeyChain.create(signatureAlgorithm);
 
         System.out.println(kc);
 
@@ -34,8 +35,8 @@ public class KeyChainTest {
     @DisplayName("crypt exception")
     public void t2() {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
-        KeyChain kc1 = KeyChain.create(signatureAlgorithm);
-        KeyChain kc2 = KeyChain.create(signatureAlgorithm);
+        KeyChain kc1 = DefaultKeyChain.create(signatureAlgorithm);
+        KeyChain kc2 = DefaultKeyChain.create(signatureAlgorithm);
 
         System.out.println(kc1);
         System.out.println(kc2);
@@ -50,7 +51,7 @@ public class KeyChainTest {
     @DisplayName("serialize and deserialize")
     public void t3() {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
-        KeyChain kc1 = KeyChain.create(signatureAlgorithm);
+        KeyChain kc1 = DefaultKeyChain.create(signatureAlgorithm);
         KeyChain kc2 = KeyChain.deserialize(kc1.serialize());
 
         System.out.println(kc1);

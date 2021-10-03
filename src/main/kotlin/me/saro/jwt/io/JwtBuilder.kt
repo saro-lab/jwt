@@ -2,7 +2,7 @@ package me.saro.jwt.io
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import me.saro.jwt.model.KeyChain
+import me.saro.jwt.KeyChain
 import java.util.*
 
 class JwtBuilder constructor(
@@ -72,7 +72,7 @@ class JwtBuilder constructor(
     fun build(): String {
         val build = Jwts.builder()
             .setHeaderParam("kid", keyChain.kid)
-            .signWith(keyChain.keyPair.private, signatureAlgorithm)
+            .signWith(keyChain.signaturePrivateKey, signatureAlgorithm)
         header.forEach { (n, v) -> build.setHeaderParam(n, v) }
         claims.forEach { (n, v) -> build.claim(n, v) }
         return build.compact()
@@ -82,7 +82,7 @@ class JwtBuilder constructor(
         header["kid"] = keyChain.kid
         header["alg"] = signatureAlgorithm
 
-        if (signatureAlgorithm != keyChain.algorithm) {
+        if (signatureAlgorithm != keyChain.signatureAlgorithm) {
             throw IllegalArgumentException("signatureAlgorithm and keyChain.algorithm does not match algorithm")
         }
     }

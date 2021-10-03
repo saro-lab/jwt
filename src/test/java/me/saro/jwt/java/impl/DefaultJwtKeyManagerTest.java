@@ -3,7 +3,7 @@ package me.saro.jwt.java.impl;
 import io.jsonwebtoken.SignatureAlgorithm;
 import me.saro.jwt.JwtKeyManager;
 import me.saro.jwt.impl.DefaultJwtKeyManager;
-import me.saro.jwt.model.KeyChain;
+import me.saro.jwt.KeyChain;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

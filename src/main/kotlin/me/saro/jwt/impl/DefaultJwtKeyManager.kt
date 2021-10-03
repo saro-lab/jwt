@@ -3,7 +3,7 @@ package me.saro.jwt.impl
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import me.saro.jwt.JwtKeyManager
-import me.saro.jwt.model.KeyChain
+import me.saro.jwt.KeyChain
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedDeque
 import kotlin.concurrent.timer
@@ -43,7 +43,7 @@ class DefaultJwtKeyManager private constructor(
             ?: throw SecurityException("Could not find key corresponding to kid")
 
     override fun rotate() {
-        queue.addFirst(KeyChain(UUID.randomUUID().toString(), signatureAlgorithm, Keys.keyPairFor(signatureAlgorithm)))
+        queue.addFirst(DefaultKeyChain(UUID.randomUUID().toString(), signatureAlgorithm, Keys.keyPairFor(signatureAlgorithm)))
         if (queue.size > keyRotationQueueSize) {
             queue.removeLast()
         }
