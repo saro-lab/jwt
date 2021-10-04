@@ -56,6 +56,15 @@ class JwtObject private constructor(
 
             println("sign2: $sign2")
             println("signb: $body.$sign2")
+
+            val verify = Signature.getInstance("SHA256withECDSAinP1363Format")
+                .apply {
+                    initVerify(kp.public)
+                    update(body.toByteArray())
+                }
+                .verify(base64Decoder.decode(sign2))
+
+            println("verify: $verify")
         }
     }
 
