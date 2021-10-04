@@ -39,8 +39,8 @@ val jwtApiVersion = "0.11.2"
 val jwtVersion = "$jwtApiVersion.2"
 
 configure<JavaPluginExtension> {
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
@@ -138,6 +138,6 @@ tasks.withType<Javadoc>().configureEach {
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "1.8"
+		jvmTarget = "11"
 	}
 }

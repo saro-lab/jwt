@@ -1,6 +1,9 @@
 package me.saro.jwt.tbd
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import java.security.KeyPairGenerator
+import java.security.Signature
+import java.security.spec.ECGenParameterSpec
 import java.util.*
 
 @Deprecated("this class is TBD")
@@ -11,7 +14,9 @@ class JwtObject private constructor(
     private val payload: Map<String, Object>,
 ) {
     companion object {
-        private val base64Decoder = Base64.getDecoder()
+        private val base64Decoder = Base64.getUrlDecoder()
+        private val base64EncoderP = Base64.getEncoder()
+        private val base64EncoderWP = Base64.getUrlEncoder().withoutPadding()
         private val objectMapper = jacksonObjectMapper()
 
         fun parse(jwt: String) {
@@ -25,10 +30,32 @@ class JwtObject private constructor(
             var header = JwtConverter.toMap(part[0])
             var payload = JwtConverter.toMap(part[1])
 
-            println(body)
-            println(sign)
-            println(header)
-            println(payload)
+            println("body: $body")
+            println("sign: $sign")
+            println("header: $body")
+            println("payload: $body")
+
+            val kp = KeyPairGenerator.getInstance("EC")
+                .apply { initialize(ECGenParameterSpec("secp256r1")) }
+                .genKeyPair()
+
+
+            val public = base64EncoderP.encodeToString(kp.public.encoded)
+            val private = base64EncoderP.encodeToString(kp.private.encoded)
+            println("public: $public")
+            println("private: $private")
+
+            val sign2 = Signature.getInstance("SHA256withECDSAinP1363Format")
+                .apply {
+                    initSign(kp.private)
+                    update(body.toByteArray())
+                }
+                .sign()
+                .run { base64EncoderWP.encodeToString(this) }
+
+
+            println("sign2: $sign2")
+            println("signb: $body.$sign2")
         }
     }
 
@@ -36,5 +63,26 @@ class JwtObject private constructor(
     fun <T> claim(name: String): T? = payload[name] as T?
 
     val kid: String? get() = header("kid")
-    val algorithm: String? get() = header("alg")
+    val algorithm: JwtAlgorithm get() = JwtAlgorithm.parse(header("alg"))
+
+    val issuer: String? get() = claim("iss")
+    val subject: String? get() = claim("sub")
+    val audience: String? get() = claim("aud")
+    val id: String? get() = claim("jti")
+    val notBefore: Long? get() = claim<Long?>("nbf")?.toString()?.toLong()
+    val issuedAt: Long? get() = claim<Long?>("iat")?.toString()?.toLong()
+    val expire: Long? get() = claim<Long?>("exp")?.toString()?.toLong()
+
+    val isValid: Boolean get() = try { verify(); true } catch (e: Exception) { false }
+
+    @Throws(JwtException::class)
+    fun verify() {
+        if ((System.currentTimeMillis() / 1000L) > (expire ?: throw JwtException("expire not exists"))) {
+            throw JwtException("expired not exists")
+        }
+    }
+}
+
+fun main() {
+    JwtObject.parse("eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.tyh-VfuzIxCyGYDlkBA7DfyjrqmSHu6pQ2hoZuFqUSLPNY2N0mpHb3nk5K17HWP_3cYHBw7AhHale5wky6-sVA")
 }

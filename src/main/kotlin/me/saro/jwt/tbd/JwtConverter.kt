@@ -7,7 +7,7 @@ import java.util.*
 @Deprecated("this class is TBD")
 class JwtConverter {
     companion object {
-        private val base64Decoder = Base64.getDecoder()
+        private val base64Decoder = Base64.getUrlDecoder()
         private val objectMapper = jacksonObjectMapper()
 
         @JvmStatic
