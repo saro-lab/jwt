@@ -36,7 +36,7 @@ plugins {
 val jwtGroupId = "me.saro"
 val jwtArtifactId = "jwt"
 val jwtApiVersion = "0.11.2"
-val jwtVersion = "$jwtApiVersion.1"
+val jwtVersion = "$jwtApiVersion.2"
 
 configure<JavaPluginExtension> {
 	sourceCompatibility = JavaVersion.VERSION_1_8

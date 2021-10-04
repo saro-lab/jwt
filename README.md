@@ -6,12 +6,12 @@
 
 ## gradle kts
 ```
-implementation('me.saro:jwt:0.11.2.1')
+implementation('me.saro:jwt:0.11.2.2')
 ```
 
 ## gradle
 ```
-compile 'me.saro:jwt:0.11.2.1'
+compile 'me.saro:jwt:0.11.2.2'
 ```
 
 ## maven
@@ -19,7 +19,7 @@ compile 'me.saro:jwt:0.11.2.1'
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>jwt</artifactId>
-  <version>0.11.2.1</version>
+  <version>0.11.2.2</version>
 </dependency>
 ```
 
@@ -32,11 +32,11 @@ compile 'me.saro:jwt:0.11.2.1'
 JwtKeyManager jwtKeyManager = DefaultJwtKeyManager.create(SignatureAlgorithm.RS256, 3, 30);
 
 String jwt = jwtKeyManager.getJwtBuilder()
-    .encryptClaim(ClaimName.id, "1234")
-    .claim(ClaimName.subject, "sub")
-    .claim(ClaimName.issuer, "iss")
-    .setIssuedAtNow()
-    .setExpireMinutes(30)
+    .encryptClaim("jti", "1234")
+    .subject("sub")
+    .issuer("iss")
+    .issuedAtNow()
+    .expireMinutes(30)
     .build();
 
 System.out.println("jwt: " + jwt);
@@ -49,20 +49,20 @@ System.out.println("payload: " + payload);
 
 JwtReader jwtReader = jwtKeyManager.parse(jwt);
 
-Map<String, String> result = new HashMap<>();
-result.put("id", jwtReader.decryptClaim(ClaimName.id));
-result.put("subject", jwtReader.claim(ClaimName.subject).toString());
-result.put("issuer", jwtReader.claim(ClaimName.issuer).toString());
-result.put("issuedAt", jwtReader.claim("iat").toString());
-result.put("expire", jwtReader.claim("exp").toString());
+Map<String, Object> result = new HashMap<>();
+result.put("id", jwtReader.decryptClaim("jti"));
+result.put("subject", jwtReader.getSubject());
+result.put("issuer", jwtReader.getIssuer());
+result.put("issuedAt", jwtReader.getIssuedAt());
+result.put("expire", jwtReader.getExpire());
 System.out.println("result: " + result);
 ```
 ### example result
 ```
-jwt: eyJraWQiOiIzNzI2YTZmYS01NGYwLTRiNzktODAyMS03ZjVlZTAwODQzNjAiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJmL2hWbURJY1VXYUNoZVVJS0pnRXZkeHZMVUgrY3ZNeG5NV3BTTlpWR3VFdmIvcytjQ2VYQ010cFpJSnEyQkdMeFhLNy9wbHAvZlAzSTZmaXBNWFJIVFUvTWVxZkNFajVwcVVYSGNNdG1tQ1l6MlJ4QXhmVStXSG1DUXZEb09DT3ZOZkhHUy9qLzlzSnZJVnB0bTRuaGl2emROTlR2cUVHL2FtRXB6NnhtV0FwNXJ4WHcyN0c4a0c1MTBseHVkR2VRNVpVd1dxL2ZTeXEzcCt2VUcyRzI2SWNlREdncEF5QVFkUnFVRUJGUEZ0aXRqaWZTVGdKdmw1a2VVY2F1Y012WnJERHRxZUg5VWxrUXFRUmwxbG01Ryt5eXIyZDFWQ1dwSEZIWWs0OGhzTmJrZDNZZ2FMK1pCT0tPZHVQTGJzemduZmRGL1h0TmNCdENxUkNadHZpRlE9PSIsInN1YiI6InN1YiIsImlzcyI6ImlzcyIsImlhdCI6MTYzMjg1NjY0MCwiZXhwIjoxNjMyODU4NDQwfQ.A0zjgTnlsPSbZgejGMoytV5XGclIsx66iFxXnrAwCqJr_l00POT1PnTobbPLGy9xStGFsF7NaNt7AYvnPNp3G_lBMJ9kfPGWjBGdQ1JM-xeNQp5YzBwUMryJvzXiS7xOV0KIu7vZe-xGiCqibK7kPF4rvl0kXCcRRkCCHJbyC3Z1kTdCNbIuQ3KIHfcbS3ReLplw8QwtHUg9TPOCjW47u1MIqsrRN9OUVGq3ooxE2TQsJ7htz_vCPcd_qEV7oHc-Q-Kh-2R8mVdyY5L2KfOg5BI57MTsiz6F0cGETk9nc8RPIRO8aoxiIgVRgz9sQgCvQFw73E6GOqSzqq7jsXJdcQ
-header: {"kid":"3726a6fa-54f0-4b79-8021-7f5ee0084360","alg":"RS256"}
-payload: {"jti":"f/hVmDIcUWaCheUIKJgEvdxvLUH+cvMxnMWpSNZVGuEvb/s+cCeXCMtpZIJq2BGLxXK7/plp/fP3I6fipMXRHTU/MeqfCEj5pqUXHcMtmmCYz2RxAxfU+WHmCQvDoOCOvNfHGS/j/9sJvIVptm4nhivzdNNTvqEG/amEpz6xmWAp5rxXw27G8kG510lxudGeQ5ZUwWq/fSyq3p+vUG2G26IceDGgpAyAQdRqUEBFPFtitjifSTgJvl5keUcaucMvZrDDtqeH9UlkQqQRl1lm5G+yyr2d1VCWpHFHYk48hsNbkd3YgaL+ZBOKOduPLbszgnfdF/XtNcBtCqRCZtviFQ==","sub":"sub","iss":"iss","iat":1632856640,"exp":1632858440}
-result: {subject=sub, expire=1632858440, id=1234, issuedAt=1632856640, issuer=iss}
+jwt: eyJraWQiOiI1YjlhZTEwMi01NmVlLTRiMDItODJlZC01OWE4NzBiZTQ4MWEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJhM2Q5THR1YUlJSGRFY2Jjcm13eGJBcjRIcTZ4ZFdoeEhFNXZoYlB2azBFTU1KYk9PaFdxK290TENQUDIzK2NNdXNBR0pIU0grMmhPOVJHTFBCdmkzcFRmRGpRQnRERVZ1THlqOG1HMDBXTllvUldLL3EwSzJ3MzNHY3g4RUl0Z0M5bU80NXlxWWFyeXVBRVBnYi92SWNXODZIaG03ajJ5ckkrNTIzaHpaRHkxeGtrZ3lnSmg3TWdnbWo4aXp3ZFczQlF1YzBrZEk2aVhXcVAxejh4b0RVUHdiZUJwMGxtc29rSkwvMW9KSitjQXhjVnN5YUZtWFZTUWlEK0JlVmlaYWRreC9lMUxLT1BqOG1sZnJMS3EzU3pHRTdRdlhRdURIQzRMN0lzVXV3RnRKZnNnL083T1RoVW4zcURtN21KWk81dEpaSFNWQ3NtSkNrYnJVQnJYNFE9PSIsInN1YiI6InN1YiIsImlzcyI6ImlzcyIsImlhdCI6MTYzMzMxMzg1NSwiZXhwIjoxNjMzMzE1NjU1fQ.CdG54XBrGV2E6FILS8PhcdLCXWoOYVcrbClaXCiam-gXYzUZE3_HFfPiT_uD2zHy2IPftJvQlp1I5jR22TiDxik9S35ypMc3I40C2IkCSn-lC7y6jsKDdSuPsyOIARasvlPz53orBknamVMCj26XwO-1EpY1hbmM3yGqzIdOGElmua-xsMqlfGADPkpCxR3-w-acE5814L7ZIU7JJPtsZwRD9CaFSlKwwr2JjOss_QcD2DaLGU--8u5BtmTihqbjezFjhVjGnQssk_QP_4zFkO7H9NrmXISKcBT-BTECCI8MdftidPCdjQK1zfuvwPPHJXix0s65t6tmvJnhR-D1Mw
+header: {"kid":"5b9ae102-56ee-4b02-82ed-59a870be481a","alg":"RS256"}
+payload: {"jti":"a3d9LtuaIIHdEcbcrmwxbAr4Hq6xdWhxHE5vhbPvk0EMMJbOOhWq+otLCPP23+cMusAGJHSH+2hO9RGLPBvi3pTfDjQBtDEVuLyj8mG00WNYoRWK/q0K2w33Gcx8EItgC9mO45yqYaryuAEPgb/vIcW86Hhm7j2yrI+523hzZDy1xkkgygJh7Mggmj8izwdW3BQuc0kdI6iXWqP1z8xoDUPwbeBp0lmsokJL/1oJJ+cAxcVsyaFmXVSQiD+BeViZadkx/e1LKOPj8mlfrLKq3SzGE7QvXQuDHC4L7IsUuwFtJfsg/O7OThUn3qDm7mJZO5tJZHSVCsmJCkbrUBrX4Q==","sub":"sub","iss":"iss","iat":1633313855,"exp":1633315655}
+result: {subject=sub, expire=Mon Oct 04 11:47:35 KST 2021, id=1234, issuedAt=Mon Oct 04 11:17:35 KST 2021, issuer=iss}
 ```
 
 ## Kotlin
@@ -74,11 +74,11 @@ result: {subject=sub, expire=1632858440, id=1234, issuedAt=1632856640, issuer=is
 val jwtKeyManager: JwtKeyManager = create(SignatureAlgorithm.RS256, 3, 30)
 
 val jwt = jwtKeyManager.getJwtBuilder()
-    .encryptClaim(ClaimName.id, "1234")
-    .claim(ClaimName.subject, "sub")
-    .claim(ClaimName.issuer, "iss")
-    .setIssuedAtNow()
-    .setExpireMinutes(30)
+    .encryptClaim("jti", "1234")
+    .subject("sub")
+    .issuer("iss")
+    .issuedAtNow()
+    .expireMinutes(30)
     .build()
 println("jwt: $jwt")
 
@@ -91,20 +91,20 @@ println("payload: $payload")
 val jwtReader = jwtKeyManager.parse(jwt)
 
 val result = mapOf(
-    "id" to jwtReader.decryptClaim(ClaimName.id),
-    "subject" to jwtReader.claim(ClaimName.subject),
-    "issuer" to jwtReader.claim(ClaimName.issuer),
-    "issuedAt" to jwtReader.claim("iat"),
-    "expire" to jwtReader.claim("exp")
+    "id" to jwtReader.decryptClaim("jti"),
+    "subject" to jwtReader.subject,
+    "issuer" to jwtReader.issuer,
+    "issuedAt" to jwtReader.issuedAt,
+    "expire" to jwtReader.expire
 )
 println("result: $result")
 ```
 ### result
 ```
-jwt: eyJraWQiOiJkNjk2YzIwZS0yYWNmLTQ4ZWMtODk0ZS03NTRkYzZiYzkxOTUiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJJMDRZOWZXV1h1a2tOc2VRVm92TGlMaWRFUG5ESkh3Qk16RFdrSExZUHJNNEZGUm9uT3UvMjFtODBkcDZTeUliQVRmaXBwb0NXVzh1RCtUa3QyMG5aLzU5elF4MnRxWC8rN2RQWXpQNkEyYm1kYnZuQmxYSWtjeCtPTnQzK2hkV3lFc3B6dWNxOWNTdm14OENUckgxSlQ5eVpPbU03anE2dmgrV0tlQjRFbXNKSkdhZlN3b3lyNVJBTUQzMGNFQk5hZm1qWGc3Y0tYcVZsTDNYajlCQkFQaUVnaHdXcVc5QTlUMGp6YUdCcERyalgxV3FBeE9CQ2RaMWw3MDg4YmIyNGxjOC81K0RKQVVsZ2NhWmZCVnMzdlJ0bzRsUWRuZUJtZ1dhZ0x5Sm0xZmptUEJlY2Y5UmwyOExXMHJYMWM1RVhPVUt0eURySjJhcC9jU2dLK1VJMHc9PSIsInN1YiI6InN1YiIsImlzcyI6ImlzcyIsImlhdCI6MTYzMjg1NjcxNSwiZXhwIjoxNjMyODU4NTE1fQ.gIcpTHGvRy2TFQKoCFlcI82xf3SDL-LZPT7BZcam8dVcYVfcTWKh1_kdSjA-O0UY4sbjT1kYvKtUK12iQH6jFjnebOIWcA42t1Z5M1-8ztJt3hNAnjOOg5iLeT0P1rD-0fPS4NLL8m8QE34p-O0EFDUxIP4eYnQaXZrrGfT6ZF1mT-p3TMHZD9C8QNm5A0S9V90RePzj5Dn7KfN6dkrELkddFqjIjKZMYOYgZANg7NqDh01XcIDjT-kkdxpukhCkCL0iWSv_Ek-Igx-jth7G4iHQe_E5U_Us3oJjxoh1tZvhMY6CIvu07jASRhYRBeZX6oyAEQFkZDoHfUx4Coyuaw
-header: {"kid":"d696c20e-2acf-48ec-894e-754dc6bc9195","alg":"RS256"}
-payload: {"jti":"I04Y9fWWXukkNseQVovLiLidEPnDJHwBMzDWkHLYPrM4FFRonOu/21m80dp6SyIbATfippoCWW8uD+Tkt20nZ/59zQx2tqX/+7dPYzP6A2bmdbvnBlXIkcx+ONt3+hdWyEspzucq9cSvmx8CTrH1JT9yZOmM7jq6vh+WKeB4EmsJJGafSwoyr5RAMD30cEBNafmjXg7cKXqVlL3Xj9BBAPiEghwWqW9A9T0jzaGBpDrjX1WqAxOBCdZ1l7088bb24lc8/5+DJAUlgcaZfBVs3vRto4lQdneBmgWagLyJm1fjmPBecf9Rl28LW0rX1c5EXOUKtyDrJ2ap/cSgK+UI0w==","sub":"sub","iss":"iss","iat":1632856715,"exp":1632858515}
-result: {id=1234, subject=sub, issuer=iss, issuedAt=1632856715, expire=1632858515}
+jwt: eyJraWQiOiI0YzFiMDE4ZC1mMTFkLTQ1MjYtOGY2Yi1iYjJmYjM4Y2Q1ZTgiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiI0SmoxUVd1cWFyUDRrZmprRHUvQkJQNUlXZWxZS1VxV2tyUlRGUHV4dFFXUWd5TjBpbWN2amN3Mng3RUl1U0FDQzExUS9kYXpCMFBJN1QzdnVQZnVCL2ZLUDZLTFBZTEwzL3E0V2IxVzJCcUNlaUlNaDNJb0JDVzZZeGxQaHh1VFhZUmQ4UWJERzhMQmNEWXF0STFRL2NOanh4bm9GZkFJSS9zbTd5amUweGpGV3p0Wkh2elZtUGtZUWdtNzdoOVhYODZ5amJUZUt6V0ozTzRKVml5NitlZnczN3E3V0RXWlFDdVp1dG4vY085VVMwMzBsdkFUSjJseFM3cmZSNTZ6ZlZhRnFsRlBJZnBEK0dHZU9rQ1B2WXFMUFhrQkZpY2w3Zk1DT1RmazVLY0owRThQL2lMbFoxa1hBRk5tN3R2aWtOME1yRW5IVHRPRjhGV0pmWmJhWXc9PSIsInN1YiI6InN1YiIsImlzcyI6ImlzcyIsImlhdCI6MTYzMzMxMzk0MCwiZXhwIjoxNjMzMzE1NzQwfQ.37D99kblPuPa6vIKiYrTwnL2FpeAduF4byo6XjF405LwNeucm9i9QMldI7wHVF47VZ7qakJgUKCPEArUB8PVsHj6yMTcohI-GmrkXPpToJWTYJ1hbqNxFuJbudGh9gTjj95xjHBtFLwjU6wIRu1G8MMJsi6CZWBvNYeuZB5KN-EzXhgpMIfrU0wFvcDnkqNLEv0TFmCtA7OVmwYLJhCE7rPWFZ6gyaKBUwFxsW_0JUmjg37pjHgIwGG-HkM9dmRf6lGRAXpKFHdvDuGGNNzwUCMKkF69SEM3KHIADzsm3bwgyta3VM27KjM9O6bNMCaCdg83HjhRpi0pvnOcFVhRgg
+header: {"kid":"4c1b018d-f11d-4526-8f6b-bb2fb38cd5e8","alg":"RS256"}
+payload: {"jti":"4Jj1QWuqarP4kfjkDu/BBP5IWelYKUqWkrRTFPuxtQWQgyN0imcvjcw2x7EIuSACC11Q/dazB0PI7T3vuPfuB/fKP6KLPYLL3/q4Wb1W2BqCeiIMh3IoBCW6YxlPhxuTXYRd8QbDG8LBcDYqtI1Q/cNjxxnoFfAII/sm7yje0xjFWztZHvzVmPkYQgm77h9XX86yjbTeKzWJ3O4JViy6+efw37q7WDWZQCuZutn/cO9US030lvATJ2lxS7rfR56zfVaFqlFPIfpD+GGeOkCPvYqLPXkBFicl7fMCOTfk5KcJ0E8P/iLlZ1kXAFNm7tvikN0MrEnHTtOF8FWJfZbaYw==","sub":"sub","iss":"iss","iat":1633313940,"exp":1633315740}
+result: {subject=sub, expire=Mon Oct 04 11:49:00 KST 2021, id=1234, issuedAt=Mon Oct 04 11:19:00 KST 2021, issuer=iss}
 ```
 
 ## repository
