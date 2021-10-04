@@ -62,6 +62,9 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtApiVersion")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtApiVersion")
 
+	// jackson
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+
 	// test
 	val junitVer = "5.8.1"
 	testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVer")
