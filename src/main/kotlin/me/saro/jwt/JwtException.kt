@@ -1,4 +1,3 @@
-package me.saro.jwt.tbd
+package me.saro.jwt
 
-@Deprecated("this class is TBD")
 class JwtException(override val message: String): SecurityException(message)

@@ -1,10 +1,10 @@
-package me.saro.jwt.tbd
+package me.saro.jwt.old.tbd
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import me.saro.jwt.JwtException
 import java.util.*
 
-@Deprecated("this class is TBD")
 class JwtConverter {
     companion object {
         private val base64Decoder = Base64.getUrlDecoder()

@@ -1,13 +1,13 @@
 package me.saro.jwt.kotlin.impl
 
 import io.jsonwebtoken.SignatureAlgorithm
-import me.saro.jwt.impl.DefaultJwtKeyManager
+import me.saro.jwt.old.impl.DefaultJwtKeyManager
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("[Kotlin] DefaultJwtKeyManager")
-class DefaultJwtKeyManagerTest{
+class DefaultJwtObjectKeyManagerTest{
 
     @Test
     fun `key not rotate`() {

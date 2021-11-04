@@ -1,8 +1,8 @@
-package me.saro.jwt.io
+package me.saro.jwt.old.io
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
-import me.saro.jwt.KeyChain
+import me.saro.jwt.old.KeyChain
 import java.util.*
 
 class JwtReader(

@@ -1,4 +1,4 @@
-package me.saro.jwt
+package me.saro.jwt.old
 
 import io.jsonwebtoken.SignatureAlgorithm
 import java.io.ByteArrayInputStream

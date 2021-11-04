@@ -1,8 +1,8 @@
-package me.saro.jwt.impl
+package me.saro.jwt.old.impl
 
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import me.saro.jwt.KeyChain
+import me.saro.jwt.old.KeyChain
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.security.KeyPair

@@ -1,9 +1,9 @@
 package me.saro.jwt.java;
 
 import io.jsonwebtoken.SignatureAlgorithm;
-import me.saro.jwt.JwtKeyManager;
-import me.saro.jwt.impl.DefaultJwtKeyManager;
-import me.saro.jwt.io.JwtReader;
+import me.saro.jwt.old.JwtKeyManager;
+import me.saro.jwt.old.impl.DefaultJwtKeyManager;
+import me.saro.jwt.old.io.JwtReader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

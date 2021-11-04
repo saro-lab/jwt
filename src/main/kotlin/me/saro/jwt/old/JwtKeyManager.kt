@@ -1,8 +1,8 @@
-package me.saro.jwt
+package me.saro.jwt.old
 
 import io.jsonwebtoken.*
-import me.saro.jwt.io.JwtBuilder
-import me.saro.jwt.io.JwtReader
+import me.saro.jwt.old.io.JwtBuilder
+import me.saro.jwt.old.io.JwtReader
 import java.security.Key
 
 abstract class JwtKeyManager{

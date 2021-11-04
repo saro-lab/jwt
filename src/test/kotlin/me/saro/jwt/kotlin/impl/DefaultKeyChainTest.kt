@@ -1,8 +1,8 @@
 package me.saro.jwt.kotlin.impl
 
 import io.jsonwebtoken.SignatureAlgorithm
-import me.saro.jwt.KeyChain
-import me.saro.jwt.impl.DefaultKeyChain
+import me.saro.jwt.old.KeyChain
+import me.saro.jwt.old.impl.DefaultKeyChain
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

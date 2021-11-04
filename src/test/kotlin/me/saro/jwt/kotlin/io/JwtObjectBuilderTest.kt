@@ -1,14 +1,14 @@
 package me.saro.jwt.kotlin.io
 
 import io.jsonwebtoken.SignatureAlgorithm
-import me.saro.jwt.impl.DefaultKeyChain
-import me.saro.jwt.io.JwtBuilder
+import me.saro.jwt.old.impl.DefaultKeyChain
+import me.saro.jwt.old.io.JwtBuilder
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("[Kotlin] JwtBuilder")
-class JwtBuilderTest {
+class JwtObjectBuilderTest {
     @Test
     fun `arguments check`() {
         Assertions.assertThrows(IllegalArgumentException::class.java) { JwtBuilder(SignatureAlgorithm.RS384, DefaultKeyChain.create(SignatureAlgorithm.RS256)) }

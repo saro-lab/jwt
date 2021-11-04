@@ -1,14 +1,14 @@
 package me.saro.jwt.kotlin.io
 
 import io.jsonwebtoken.SignatureAlgorithm
-import me.saro.jwt.JwtKeyManager
-import me.saro.jwt.impl.DefaultJwtKeyManager.Companion.create
+import me.saro.jwt.old.JwtKeyManager
+import me.saro.jwt.old.impl.DefaultJwtKeyManager.Companion.create
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("[Kotlin] JwtReader")
-class JwtReaderTest {
+class JwtObjectReaderTest {
     @Test
     fun read() {
         val name = "안녕 hello !@#$"

@@ -1,6 +1,6 @@
-package me.saro.jwt.tbd
+package me.saro.jwt.old.tbd
 
-import io.jsonwebtoken.JwtException
+import me.saro.jwt.JwtException
 
 enum class JwtAlgorithm {
     HS256,

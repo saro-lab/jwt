@@ -35,8 +35,7 @@ plugins {
 
 val jwtGroupId = "me.saro"
 val jwtArtifactId = "jwt"
-val jwtApiVersion = "0.11.2"
-val jwtVersion = "$jwtApiVersion.2"
+val jwtVersion = "0.11.2.2"
 
 configure<JavaPluginExtension> {
 	sourceCompatibility = JavaVersion.VERSION_11
@@ -56,11 +55,6 @@ dependencies {
 	// koltin
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-
-	// jsonwebtoken jwt
-	api("io.jsonwebtoken:jjwt-api:$jwtApiVersion")
-	runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtApiVersion")
-	runtimeOnly("io.jsonwebtoken:jjwt-jackson:$jwtApiVersion")
 
 	// jackson
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
@@ -87,10 +81,10 @@ publishing {
 
 			repositories {
 				maven {
-					credentials {
-						username = project.property("sonatype.username").toString()
-						password = project.property("sonatype.password").toString()
-					}
+//					credentials {
+//						username = project.property("sonatype.username").toString()
+//						password = project.property("sonatype.password").toString()
+//					}
 					val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
 					val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
 					url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl

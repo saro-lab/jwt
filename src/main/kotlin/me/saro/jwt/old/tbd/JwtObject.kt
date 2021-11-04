@@ -1,12 +1,12 @@
-package me.saro.jwt.tbd
+package me.saro.jwt.old.tbd
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import me.saro.jwt.JwtException
 import java.security.KeyPairGenerator
 import java.security.Signature
 import java.security.spec.ECGenParameterSpec
 import java.util.*
 
-@Deprecated("this class is TBD")
 class JwtObject private constructor(
     private val body: String,
     private val sign: String,
@@ -25,8 +25,8 @@ class JwtObject private constructor(
                 throw JwtException("there is not jwt format: $jwt")
             }
 
-            var body = jwt.substring(0, jwt.lastIndexOf('.'))
-            var sign = part[1]
+            val body = jwt.substring(0, jwt.lastIndexOf('.'))
+            val sign = part[1]
             var header = JwtConverter.toMap(part[0])
             var payload = JwtConverter.toMap(part[1])
 

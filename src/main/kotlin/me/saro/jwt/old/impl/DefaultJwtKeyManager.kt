@@ -1,9 +1,9 @@
-package me.saro.jwt.impl
+package me.saro.jwt.old.impl
 
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import me.saro.jwt.JwtKeyManager
-import me.saro.jwt.KeyChain
+import me.saro.jwt.old.JwtKeyManager
+import me.saro.jwt.old.KeyChain
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedDeque
 import kotlin.concurrent.timer
