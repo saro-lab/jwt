@@ -1,7 +1,7 @@
-package me.saro.jwt.key.es
+package me.saro.jwt.old.key.es
 
-import me.saro.jwt.key.JwtKey
-import me.saro.jwt.key.JwtKeyIo
+import me.saro.jwt.old.key.JwtAlgorithm
+import me.saro.jwt.old.key.JwtKeyIo
 import java.security.KeyPairGenerator
 import java.security.Signature
 import java.security.spec.ECGenParameterSpec
@@ -18,8 +18,8 @@ abstract class JwtKeyIoEs: JwtKeyIo {
     protected abstract fun ecGenParameterSpec(): String
     protected abstract fun signatureAlgorithm(): Signature
 
-    override fun generate(): JwtKey =
-        JwtKeyEs(
+    override fun generate(): JwtAlgorithm =
+        JwtAlgorithmEs(
             KeyPairGenerator.getInstance("EC")
                 .apply { initialize(ECGenParameterSpec(ecGenParameterSpec())) }
                 .genKeyPair()
@@ -31,7 +31,7 @@ abstract class JwtKeyIoEs: JwtKeyIo {
 //        return "${algorithm()} $publicKey $privateKey"
 //    }
 
-    override fun import(keyData: String): JwtKey {
+    override fun import(keyData: String): JwtAlgorithm {
         TODO("Not yet implemented")
     }
 }

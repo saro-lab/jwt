@@ -1,7 +1,7 @@
 package me.saro.jwt.old.tbd
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import me.saro.jwt.JwtException
+import me.saro.jwt.old.JwtException
 import java.security.KeyPairGenerator
 import java.security.Signature
 import java.security.spec.ECGenParameterSpec

@@ -1,6 +1,6 @@
-package me.saro.jwt
+package me.saro.jwt.old
 
-import me.saro.jwt.alg.JwtSignatureAlgorithm
+import me.saro.jwt.old.alg.JwtSignatureAlgorithm
 import me.saro.jwt.old.tbd.JwtObject
 
 class JwtManager(

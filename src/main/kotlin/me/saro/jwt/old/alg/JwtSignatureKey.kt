@@ -1,4 +1,4 @@
-package me.saro.jwt.alg
+package me.saro.jwt.old.alg
 
 class JwtSignatureKey private constructor(
     val algorithm: JwtSignatureAlgorithm,

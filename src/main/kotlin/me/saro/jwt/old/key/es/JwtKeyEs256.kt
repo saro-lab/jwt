@@ -1,16 +1,16 @@
-package me.saro.jwt.key.es
+package me.saro.jwt.old.key.es
 
-import me.saro.jwt.key.JwtKey
+import me.saro.jwt.old.key.JwtAlgorithm
 import java.security.KeyPair
 import java.security.Signature
 
 
 class JwtKeyEs256(
     override val keyPair: KeyPair
-): JwtKeyEs(keyPair) {
+): JwtAlgorithmEs(keyPair) {
 
 
-    override fun create(): JwtKey =
+    override fun create(): JwtAlgorithm =
         JwtKeyEs256(create("secp256r1"))
 
     override fun getSignature(): Signature =algorithm
@@ -18,7 +18,7 @@ class JwtKeyEs256(
 
     override fun algorithm(): String = "ES256"
 
-    override fun import(bytes: ByteArray): JwtKey {
+    override fun import(bytes: ByteArray): JwtAlgorithm {
         TODO("Not yet implemented")
     }
 

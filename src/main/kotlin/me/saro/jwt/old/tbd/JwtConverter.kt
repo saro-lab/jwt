@@ -2,7 +2,7 @@ package me.saro.jwt.old.tbd
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import me.saro.jwt.JwtException
+import me.saro.jwt.old.JwtException
 import java.util.*
 
 class JwtConverter {

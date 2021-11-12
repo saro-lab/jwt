@@ -1,11 +1,9 @@
-package me.saro.jwt.key.es
-
-import me.saro.jwt.key.JwtKey
+package me.saro.jwt.old.key.es
 
 
 class JwtKeyEs384(
 
-): JwtKeyEs() {
+): JwtAlgorithmEs() {
     override fun algorithm(): String = "ES384"
 
     override fun validate(jwt: String): Boolean {

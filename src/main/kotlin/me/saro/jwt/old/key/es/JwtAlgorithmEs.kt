@@ -1,13 +1,13 @@
-package me.saro.jwt.key.es
+package me.saro.jwt.old.key.es
 
-import me.saro.jwt.key.JwtKey
+import me.saro.jwt.old.key.JwtAlgorithm
 import java.security.KeyPair
 import java.security.Signature
 import java.util.*
 
-class JwtKeyEs(
+abstract class JwtAlgorithmEs(
     protected open val keyPair: KeyPair
-): JwtKey {
+): JwtAlgorithm {
     companion object {
         private val EN_BASE64 = Base64.getUrlEncoder().withoutPadding()
         private val DE_BASE64 = Base64.getUrlDecoder()

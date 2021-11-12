@@ -1,8 +1,8 @@
-package me.saro.jwt.key
+package me.saro.jwt.old.key
 
-import me.saro.jwt.JwtException
+import me.saro.jwt.old.JwtException
 
-interface JwtKey {
+interface JwtAlgorithm {
     fun algorithm(): String
     fun signature(body: String): String
     @Throws(JwtException::class)
