@@ -2,7 +2,9 @@ package me.saro.jwt.alg.es
 
 import me.saro.jwt.core.JwtAlgorithm
 import me.saro.jwt.core.JwtKey
+import java.security.KeyPairGenerator
 import java.security.Signature
+import java.security.spec.ECGenParameterSpec
 import java.util.*
 
 abstract class JwtAlgorithmEs: JwtAlgorithm{
@@ -11,6 +13,7 @@ abstract class JwtAlgorithmEs: JwtAlgorithm{
         private val DE_BASE64 = Base64.getUrlDecoder()
     }
 
+    abstract fun getECGenParameterSpec(): ECGenParameterSpec
     abstract fun getSignature(): Signature
 
     override fun signature(key: JwtKey, body: String): String {
@@ -19,6 +22,13 @@ abstract class JwtAlgorithmEs: JwtAlgorithm{
         signature.update(body.toByteArray())
         return EN_BASE64.encodeToString(signature.sign())
     }
+
+    override fun genJwtKey(): JwtKey =
+        JwtKeyEs(
+            KeyPairGenerator.getInstance("EC")
+                .apply { initialize(getECGenParameterSpec()) }
+                .genKeyPair()
+        )
 
     override fun verify(key: JwtKey, jwt: String): Boolean {
         val signature = getSignature()
@@ -29,8 +39,6 @@ abstract class JwtAlgorithmEs: JwtAlgorithm{
         return signature.verify(DE_BASE64.decode(jwt.substring(lastPoint + 1)))
     }
 
-
-//    fun randomJwtKey(): JwtKey
-//    fun signature(key: JwtKey, body: String): String
-//    fun verify(key: JwtKey, jwt: String): Boolean
+    override fun toJwtKey(text: String): JwtKey =
+        JwtKeyEs.parse(text)
 }
