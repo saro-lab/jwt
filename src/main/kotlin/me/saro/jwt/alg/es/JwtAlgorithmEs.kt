@@ -7,7 +7,7 @@ import me.saro.jwt.exception.JwtException
 import java.security.KeyPairGenerator
 import java.security.Signature
 import java.security.spec.ECGenParameterSpec
-import java.util.*
+import java.util.Base64
 
 abstract class JwtAlgorithmEs: JwtAlgorithm{
     companion object {
@@ -40,7 +40,7 @@ abstract class JwtAlgorithmEs: JwtAlgorithm{
             signature.initVerify((key as JwtKeyEs).keyPair.public)
             signature.update(jwt.substring(0, lastPoint).toByteArray())
             if (signature.verify(DE_BASE64_URL.decode(jwt.substring(lastPoint + 1)))) {
-                var jwtObject = JwtObject.parse(jwt)
+                val jwtObject = JwtObject.parse(jwt)
                 if (jwtObject.header("alg") != algorithm()) {
                     throw JwtException("algorithm does not matched jwt : $jwt")
                 }
