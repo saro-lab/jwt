@@ -3,7 +3,7 @@ package me.saro.jwt.old.util
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import me.saro.jwt.old.tbd.Jwt
-import me.saro.jwt.old.JwtException
+import me.saro.jwt.JwtException
 import java.util.*
 
 class DecodeJwt {

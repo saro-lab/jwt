@@ -1,6 +1,6 @@
 package me.saro.jwt.old.key.rs
 
-import me.saro.jwt.old.key.JwtAlgorithm
+import me.saro.jwt.core.JwtAlgorithm
 
 abstract class JwtAlgorithmRs(
 

@@ -1,6 +1,6 @@
 package me.saro.jwt.old.key.es
 
-import me.saro.jwt.old.key.JwtAlgorithm
+import me.saro.jwt.core.JwtAlgorithm
 import me.saro.jwt.old.key.JwtKeyIo
 import java.security.KeyPairGenerator
 import java.security.Signature
@@ -20,9 +20,7 @@ abstract class JwtKeyIoEs: JwtKeyIo {
 
     override fun generate(): JwtAlgorithm =
         JwtAlgorithmEs(
-            KeyPairGenerator.getInstance("EC")
-                .apply { initialize(ECGenParameterSpec(ecGenParameterSpec())) }
-                .genKeyPair()
+
         )
 
 //    override fun export(jwtKey: JwtKeyEs): String {

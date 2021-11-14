@@ -1,6 +1,6 @@
 package me.saro.jwt.old.key.es
 
-import me.saro.jwt.old.key.JwtAlgorithm
+import me.saro.jwt.core.JwtAlgorithm
 import java.security.KeyPair
 import java.security.Signature
 
