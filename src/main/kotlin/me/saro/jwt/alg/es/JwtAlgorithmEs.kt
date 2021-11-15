@@ -4,15 +4,20 @@ import me.saro.jwt.core.JwtAlgorithm
 import me.saro.jwt.core.JwtKey
 import me.saro.jwt.core.JwtObject
 import me.saro.jwt.exception.JwtException
+import java.security.KeyFactory
+import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.Signature
 import java.security.spec.ECGenParameterSpec
-import java.util.Base64
+import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
+import java.util.*
 
 abstract class JwtAlgorithmEs: JwtAlgorithm{
     companion object {
         private val EN_BASE64_URL_WOP = Base64.getUrlEncoder().withoutPadding()
         private val DE_BASE64_URL = Base64.getUrlDecoder()
+        private val DE_BASE64 = Base64.getDecoder()
     }
 
     abstract fun getECGenParameterSpec(): ECGenParameterSpec
@@ -50,6 +55,11 @@ abstract class JwtAlgorithmEs: JwtAlgorithm{
         throw JwtException("invalid jwt : $jwt")
     }
 
-    override fun toJwtKey(text: String): JwtKey =
-        JwtKeyEs.parse(text)
+    override fun toJwtKey(text: String): JwtKey {
+        val keyFactory = KeyFactory.getInstance("EC")
+        val textKeyPair = text.split('\n')
+        val publicKey = keyFactory.generatePublic(X509EncodedKeySpec(DE_BASE64.decode(textKeyPair[0])))
+        val privateKey = keyFactory.generatePrivate(PKCS8EncodedKeySpec(DE_BASE64.decode(textKeyPair[1])))
+        return JwtKeyEs(KeyPair(publicKey, privateKey))
+    }
 }
