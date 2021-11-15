@@ -2,7 +2,7 @@ package me.saro.jwt.alg.hs
 
 import me.saro.jwt.core.JwtAlgorithm
 import me.saro.jwt.core.JwtKey
-import me.saro.jwt.core.JwtObject
+import me.saro.jwt.core.JwtIo
 import me.saro.jwt.exception.JwtException
 import java.util.*
 import javax.crypto.Mac
@@ -43,16 +43,15 @@ abstract class JwtAlgorithmHs: JwtAlgorithm{
     override fun genJwtKey(): JwtKey =
         getJwtKey(32, 64)
 
-    override fun verify(key: JwtKey, jwt: String): JwtObject {
+    override fun verify(key: JwtKey, jwt: String, jwtIo: JwtIo): JwtIo {
         val firstPoint = jwt.indexOf('.')
         val lastPoint = jwt.lastIndexOf('.')
         if (firstPoint < lastPoint && firstPoint != -1) {
             if (signature(key, jwt.substring(0, lastPoint)) == jwt.substring(lastPoint + 1)) {
-                val jwtObject = JwtObject.parse(jwt)
-                if (jwtObject.header("alg") != algorithm()) {
+                if (jwtIo.header("alg") != algorithm()) {
                     throw JwtException("algorithm does not matched jwt : $jwt")
                 }
-                return jwtObject
+                return jwtIo
             }
         }
         throw JwtException("invalid jwt : $jwt")

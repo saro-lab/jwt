@@ -3,27 +3,29 @@ package me.saro.jwt.core
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import me.saro.jwt.exception.JwtException
+import java.lang.StringBuilder
 import java.util.*
 
-class JwtObject private constructor(
+class JwtIo private constructor(
     private val header: MutableMap<String, Any>,
     private val claim: MutableMap<String, Any>
 ) {
     companion object {
         private val OBJECT_MAPPER = ObjectMapper()
         private val DE_BASE64_URL = Base64.getUrlDecoder()
+        private val EN_BASE64_URL_WOP = Base64.getUrlEncoder().withoutPadding()
         private val TYPE_MAP = object: TypeReference<MutableMap<String, Any>>() {}
 
         @JvmStatic
-        fun create(alg: String): JwtObject {
+        fun create(alg: String): JwtIo {
             val header = mutableMapOf<String, Any>("typ" to "JWT", "alg" to alg)
             val claim = mutableMapOf<String, Any>("iat" to System.currentTimeMillis() / 1000L)
-            return JwtObject(header, claim)
+            return JwtIo(header, claim)
         }
 
         @JvmStatic
-        fun parse(jwt: String): JwtObject {
-            var jwtParts = jwt.split('.')
+        fun parse(jwt: String): JwtIo {
+            val jwtParts = jwt.split('.')
             val header = OBJECT_MAPPER.readValue(DE_BASE64_URL.decode(jwtParts[0]), TYPE_MAP)
             val claim = OBJECT_MAPPER.readValue(DE_BASE64_URL.decode(jwtParts[1]), TYPE_MAP)
 
@@ -42,7 +44,7 @@ class JwtObject private constructor(
             if (exp != null && (System.currentTimeMillis() / 1000L) > (exp as Long)) {
                 throw JwtException("expired jwt : $jwt")
             }
-            return JwtObject(header, claim)
+            return JwtIo(header, claim)
         }
 
         private fun norDate(jwt: String, header: MutableMap<String, Any>, key: String) {
@@ -58,7 +60,7 @@ class JwtObject private constructor(
         }
     }
 
-    fun header(key: String, value: Any): JwtObject {
+    fun header(key: String, value: Any): JwtIo {
         when (key) {
             "alg" -> throw JwtException("alg(algorithm) is readonly")
             "typ" -> throw JwtException("tpy(type) is readonly")
@@ -68,7 +70,7 @@ class JwtObject private constructor(
     }
     fun header(key: String): Any? = header[key]
 
-    fun claim(key: String, value: Any): JwtObject {
+    fun claim(key: String, value: Any): JwtIo {
         claim[key] = value
         return this
     }
@@ -101,4 +103,11 @@ class JwtObject private constructor(
     override fun toString(): String {
         return OBJECT_MAPPER.writeValueAsString(header) + " " + OBJECT_MAPPER.writeValueAsString(claim)
     }
+
+    fun toJwtBody(): String =
+        StringBuilder(200)
+            .append(EN_BASE64_URL_WOP.encodeToString(OBJECT_MAPPER.writeValueAsBytes(header)))
+            .append('.')
+            .append(EN_BASE64_URL_WOP.encodeToString(OBJECT_MAPPER.writeValueAsBytes(claim)))
+            .toString()
 }

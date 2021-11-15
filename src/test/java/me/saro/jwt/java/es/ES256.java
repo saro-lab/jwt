@@ -26,7 +26,7 @@ public class ES256 {
                 "1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G"
         );
         var es = new JwtAlgorithmEs256();
-        var key = es.toJwtKey(publicKey + "\n" + privateKey);
+        var key = es.toJwtKey(publicKey + " " + privateKey);
 
         var newJwtSign = es.signature(key, exJwtBody);
 
