@@ -53,7 +53,7 @@ class JwtKidManager<KID>(
 
         @Suppress("UNCHECKED_CAST")
         val key = jwtKeyMap[kid as KID]
-            ?: throw JwtException("dose not have key[kid=$kid]")
+            ?: throw JwtException("not found key[kid=$kid]")
 
         return jwtAlgorithm.verify(key, jwt, jwtIo)
     }
