@@ -41,6 +41,22 @@ class JwtKeyStoreMirror private constructor(
         list.firstOrNull { it.kid == kid }
     } ?: throw JwtException(JwtExceptionCode.NOT_FOUND_KEY, "not found kid: $kid")
 
+    override fun getState(): JwtKeyStoreState =
+        readLock.exec {
+            var nbk = 0
+            var ak = 0
+            var ek = 0
+            val now = JwtUtils.epochSecond()
+            list.stream().forEach { key ->
+                when {
+                    key.expired(now) -> ek++
+                    key.notReady(now) -> nbk++
+                    else -> ak++
+                }
+            }
+            JwtKeyStoreState("mirror", nbk, ak, ek)
+        }
+
     override fun getAllKeysForMonitor(): List<JwtKey> =
         readLock.exec { list.stream().map { it.clone() }.toList() }
 

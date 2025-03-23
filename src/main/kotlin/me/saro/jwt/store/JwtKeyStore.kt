@@ -11,6 +11,7 @@ interface JwtKeyStore {
     fun findKey(kid: String): JwtKey
     fun createJwt(): JwtNode.Builder = getCurrentKey().createJwt()
     fun parseJwt(jwt: String): JwtNode = Jwt.parseJwt(jwt) { findKey(it.kid!!) }
+    fun getState(): JwtKeyStoreState
     fun getAllKeysForMonitor(): List<JwtKey>
     fun getExpireKeysForMonitor(): List<JwtKey> = getExpireKeysForMonitor(JwtUtils.epochSecond())
     fun getExpireKeysForMonitor(epochSecond: Long): List<JwtKey> = getAllKeysForMonitor().filter { it.expired(epochSecond) }

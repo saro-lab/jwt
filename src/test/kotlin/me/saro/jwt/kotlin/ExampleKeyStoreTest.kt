@@ -46,6 +46,7 @@ class ExampleKeyStoreTest {
         Assertions.assertEquals(3, providerServer.getAllKeysForMonitor().size)
         println("issue 3 keys:${providerServer.getAllKeysForMonitor()}")
         Assertions.assertEquals(3, providerServer.getNotReadyKeysForMonitor().size)
+        println(providerServer.getState())
 
         // export to database
         database = providerServer.exports()
@@ -80,6 +81,7 @@ class ExampleKeyStoreTest {
         Assertions.assertEquals(3, mirrorServer.getAllKeysForMonitor().size)
         println("exports, imports test\n$exports")
         Assertions.assertEquals(3, mirrorServer.getNotReadyKeysForMonitor().size)
+        println(mirrorServer.getState())
     }
 
     @Test
@@ -190,5 +192,7 @@ class ExampleKeyStoreTest {
             Assertions.assertEquals(false, node.claimBoolean("boolData2"))
         }
         println("parse jwts by mirror")
+        println(providerServer.getState())
+        println(mirrorServer.getState())
     }
 }

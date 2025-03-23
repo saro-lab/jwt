@@ -1,5 +1,5 @@
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "2.1.20-RC3"
+	id("org.jetbrains.kotlin.jvm") version "2.1.20"
 	id("org.ec4j.editorconfig") version "0.1.0"
 	id("idea")
 	signing
@@ -8,7 +8,7 @@ plugins {
 
 val jwtGroupId = "me.saro"
 val jwtArtifactId = "jwt"
-val jwtVersion = "6.0.0"
+val jwtVersion = "6.0.1"
 
 repositories {
 	mavenCentral()

@@ -21,9 +21,9 @@ class JwtHsAlgorithm(
     fun toKeyByBase64(base64: String): JwtKey = toKey(JwtUtils.decodeBase64(base64))
     fun toKeyByText(secret: String): JwtKey = toKey(secret.toByteArray())
 
+    @Suppress("DEPRECATION")
     override fun parseKey(map: Map<String, String>): JwtKey =
         if (algorithmFullName == map["alg"]) {
-            @Suppress("DuplicatedCode")
             toKeyByBase64(map["key"] ?: throw IllegalArgumentException("key is null")).bind(map)
         } else {
             throw IllegalArgumentException("algorithm is not matched")

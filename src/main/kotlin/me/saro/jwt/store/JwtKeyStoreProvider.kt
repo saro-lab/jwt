@@ -23,13 +23,13 @@ class JwtKeyStoreProvider private constructor(): JwtKeyStore {
     private var keySyncTime: Long = 0
     private var keyExpireTime: Long = 0
 
+    @Suppress("DEPRECATION")
     fun issue() {
         val now = JwtUtils.epochSecond()
         val map = mutableMapOf<String, String>()
         if (keySyncTime != 0L) { map["nbf"] = (now + keySyncTime).toString() }
         if (keyExpireTime != 0L) { map["exp"] = (now + keyExpireTime).toString() }
 
-        @Suppress("DuplicatedCode")
         val key = genKey(algorithm).bind(map)
         putKeys(listOf(key))
     }
@@ -72,6 +72,22 @@ class JwtKeyStoreProvider private constructor(): JwtKeyStore {
 
     override fun getAllKeysForMonitor(): List<JwtKey> =
         readLock.exec { list.stream().map { it.clone() }.toList() }
+
+    override fun getState(): JwtKeyStoreState =
+        readLock.exec {
+            var nbk = 0
+            var ak = 0
+            var ek = 0
+            val now = JwtUtils.epochSecond()
+            list.stream().forEach { key ->
+                when {
+                    key.expired(now) -> ek++
+                    key.notReady(now) -> nbk++
+                    else -> ak++
+                }
+            }
+            JwtKeyStoreState("provider", nbk, ak, ek)
+        }
 
     class Builder {
         private val provider: JwtKeyStoreProvider = JwtKeyStoreProvider()

@@ -20,9 +20,9 @@ interface JwtKeyPairAlgorithm<T: JwtKey> : JwtAlgorithm {
     fun toKey(publicKey: PublicKey, privateKey: PrivateKey): T = toKey(KeyPair(publicKey, privateKey))
     fun toKey(publicKey: String, privateKey: String): T = toKey(toKeyPair(publicKey, privateKey))
 
+    @Suppress("DEPRECATION")
     override fun parseKey(map: Map<String, String>): JwtKey =
         if (algorithmFullName == map["alg"]) {
-            @Suppress("DuplicatedCode")
             toKey(JwtUtils.normalizePem(map["pubKey"]!!), JwtUtils.normalizePem(map["priKey"]!!)).bind(map)
         } else {
             throw IllegalArgumentException("algorithm is not matched")

@@ -49,6 +49,7 @@ public class ExampleKeyStoreTest {
         Assertions.assertEquals(3, providerServer.getAllKeysForMonitor().size());
         System.out.println("issue 3 keys:\n" + providerServer.getAllKeysForMonitor());
         Assertions.assertEquals(3, providerServer.getNotReadyKeysForMonitor().size());
+        System.out.println(providerServer.getState());
 
         // export to database
         database = providerServer.exports();
@@ -82,6 +83,7 @@ public class ExampleKeyStoreTest {
         Assertions.assertEquals(3, mirrorServer.getAllKeysForMonitor().size());
         System.out.println("exports, imports test\n" + exports);
         Assertions.assertEquals(3, mirrorServer.getNotReadyKeysForMonitor().size());
+        System.out.println(mirrorServer.getState());
     }
 
     @Test
@@ -182,5 +184,7 @@ public class ExampleKeyStoreTest {
             Assertions.assertEquals(false, node.claimBoolean("boolData2"));
         }
         System.out.println("parse jwts by mirror");
+        System.out.println(providerServer.getState());
+        System.out.println(mirrorServer.getState());
     }
 }
