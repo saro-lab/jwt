@@ -1,10 +1,10 @@
 package me.saro.jwt.java;
 
-import me.saro.jwt.Jwt;
-import me.saro.jwt.JwtNode;
-import me.saro.jwt.exception.JwtException;
-import me.saro.jwt.store.JwtKeyStoreMirror;
-import me.saro.jwt.store.JwtKeyStoreProvider;
+import me.saro.jwt.old.Jwt;
+import me.saro.jwt.old.JwtNode;
+import me.saro.jwt.old.exception.JwtException;
+import me.saro.jwt.old.store.JwtKeyStoreMirror;
+import me.saro.jwt.old.store.JwtKeyStoreProvider;
 import org.junit.jupiter.api.*;
 
 import java.time.Duration;

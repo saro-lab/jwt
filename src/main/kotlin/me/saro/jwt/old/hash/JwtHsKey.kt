@@ -1,9 +1,9 @@
-package me.saro.jwt.hash
+package me.saro.jwt.old.hash
 
-import me.saro.jwt.JwtKey
+import me.saro.jwt.old.JwtKey
 import me.saro.jwt.JwtUtils
-import me.saro.jwt.exception.JwtException
-import me.saro.jwt.exception.JwtExceptionCode
+import me.saro.jwt.old.exception.JwtException
+import me.saro.jwt.old.exception.JwtExceptionCode
 import javax.crypto.spec.SecretKeySpec
 
 class JwtHsKey(

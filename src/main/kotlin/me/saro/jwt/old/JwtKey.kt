@@ -1,5 +1,6 @@
-package me.saro.jwt
+package me.saro.jwt.old
 
+import me.saro.jwt.JwtUtils
 import me.saro.jwt.JwtUtils.Companion.exec
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -20,7 +21,7 @@ abstract class JwtKey: Comparable<JwtKey> {
     private val readLock = lock.readLock()
 
     // metadata
-    private var _kid: String = JwtUtils.nextKid()
+    private var _kid: String = JwtUtils.Companion.nextKid()
     var kid: String
         get() = readLock.exec { _kid }
         set(value) {
@@ -32,7 +33,7 @@ abstract class JwtKey: Comparable<JwtKey> {
             }
             writeLock.exec { _kid = value }
         }
-    private fun setKidWithSeq(kid: String) = writeLock.exec { JwtUtils.nextKid(kid); _kid = kid }
+    private fun setKidWithSeq(kid: String) = writeLock.exec { JwtUtils.Companion.nextKid(kid); _kid = kid }
     private var _notBefore: Long = 0
     var notBefore: Long
         get() = readLock.exec { _notBefore }
@@ -51,7 +52,7 @@ abstract class JwtKey: Comparable<JwtKey> {
             }
             writeLock.exec { _expire = value }
         }
-    private var _issuedAt: Long = JwtUtils.epochSecond()
+    private var _issuedAt: Long = JwtUtils.Companion.epochSecond()
     var issuedAt: Long
         get() = readLock.exec { _issuedAt }
         set(value) {
@@ -63,7 +64,7 @@ abstract class JwtKey: Comparable<JwtKey> {
 
     // convert
     abstract fun toMap(): Map<String, String>
-    fun stringify(): String = JwtUtils.writeValueAsString(toMap())
+    fun stringify(): String = JwtUtils.Companion.writeValueAsString(toMap())
     protected fun toMap(vararg pairs: Pair<String, String>): Map<String, String> = mapOf(
         "alg" to algorithm.algorithmFullName,
         "kid" to kid,
@@ -74,10 +75,10 @@ abstract class JwtKey: Comparable<JwtKey> {
     )
 
     // method
-    fun ready(now: Long = JwtUtils.epochSecond()): Boolean = notBefore <= now
-    fun notReady(now: Long = JwtUtils.epochSecond()): Boolean = notBefore > now
-    fun expired(now: Long = JwtUtils.epochSecond()): Boolean = expire < now
-    fun notExpired(now: Long = JwtUtils.epochSecond()): Boolean = expire >= now
+    fun ready(now: Long = JwtUtils.Companion.epochSecond()): Boolean = notBefore <= now
+    fun notReady(now: Long = JwtUtils.Companion.epochSecond()): Boolean = notBefore > now
+    fun expired(now: Long = JwtUtils.Companion.epochSecond()): Boolean = expire < now
+    fun notExpired(now: Long = JwtUtils.Companion.epochSecond()): Boolean = expire >= now
 
     // data
     fun clone(): JwtKey = algorithm.parseKey(stringify())

@@ -6,9 +6,27 @@ import com.fasterxml.jackson.module.kotlin.jsonMapper
 import java.time.Duration
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import me.saro.jwt.JwtAlgorithm.*
+import me.saro.jwt.exception.JwtIllegalArgumentException
+import java.security.Key
+import java.security.KeyFactory
+import java.security.PrivateKey
+import java.security.PublicKey
+import java.security.Signature
+import java.security.spec.MGF1ParameterSpec
+import java.security.spec.PSSParameterSpec
+import java.security.spec.X509EncodedKeySpec
+import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
 
 class JwtUtils {
     companion object {
+
+
+
+
+
+
         private val OBJECT_MAPPER: ObjectMapper = jsonMapper()
         private val DE_BASE64_URL: Base64.Decoder = Base64.getUrlDecoder()
         private val EN_BASE64_URL: Base64.Encoder = Base64.getUrlEncoder()
@@ -24,6 +42,9 @@ class JwtUtils {
 
         private var lastKid = System.currentTimeMillis()
 
+
+        @JvmStatic
+        fun normalizePem(key: String) = key.replace(REGEX_PEM_NORMALIZE, "")
 
         @JvmStatic
         fun writeValueAsString(obj: Any): String = OBJECT_MAPPER.writeValueAsString(obj)
@@ -71,7 +92,12 @@ class JwtUtils {
         fun encodeToBase64String(src: ByteArray): String = EN_BASE64.encodeToString(src)
 
         @JvmStatic
-        fun normalizePem(key: String) = key.replace(REGEX_PEM_NORMALIZE, "")
+        fun encodeHex(bytes: ByteArray): String =
+            HexFormat.of().formatHex(bytes)
+
+        @JvmStatic
+        fun decodeHex(hex: String): ByteArray =
+            HexFormat.of().parseHex(hex)
 
         @JvmStatic
         // epoch second, Instant.now().epochSecond is slower than System.currentTimeMillis() / 1000

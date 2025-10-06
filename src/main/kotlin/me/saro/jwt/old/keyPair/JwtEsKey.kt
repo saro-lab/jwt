@@ -1,4 +1,4 @@
-package me.saro.jwt.keyPair
+package me.saro.jwt.old.keyPair
 
 import java.security.KeyPair
 

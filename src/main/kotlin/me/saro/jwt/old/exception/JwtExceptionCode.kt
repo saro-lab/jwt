@@ -1,4 +1,4 @@
-package me.saro.jwt.exception
+package me.saro.jwt.old.exception
 
 enum class JwtExceptionCode {
     // PARSER

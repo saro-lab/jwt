@@ -1,12 +1,13 @@
-package me.saro.jwt
+package me.saro.jwt.old
 
-import me.saro.jwt.hash.JwtHsAlgorithm
-import me.saro.jwt.keyPair.JwtEsAlgorithm
-import me.saro.jwt.keyPair.JwtKeyPairAlgorithm
-import me.saro.jwt.keyPair.JwtPsAlgorithm
-import me.saro.jwt.keyPair.JwtRsAlgorithm
-import me.saro.jwt.store.JwtKeyStoreMirror
-import me.saro.jwt.store.JwtKeyStoreProvider
+import me.saro.jwt.JwtUtils
+import me.saro.jwt.old.hash.JwtHsAlgorithm
+import me.saro.jwt.old.keyPair.JwtEsAlgorithm
+import me.saro.jwt.old.keyPair.JwtKeyPairAlgorithm
+import me.saro.jwt.old.keyPair.JwtPsAlgorithm
+import me.saro.jwt.old.keyPair.JwtRsAlgorithm
+import me.saro.jwt.old.store.JwtKeyStoreMirror
+import me.saro.jwt.old.store.JwtKeyStoreProvider
 
 class Jwt {
     companion object {
@@ -57,11 +58,11 @@ class Jwt {
 
         @JvmStatic
         fun parseKey(json: String): JwtKey =
-            parseKey(JwtUtils.readTextMap(json))
+            parseKey(JwtUtils.Companion.readTextMap(json))
 
         @JvmStatic
         fun parseKeyArray(jsonArray: String): List<JwtKey> =
-            JwtUtils.readTextMapList(jsonArray)
+            JwtUtils.Companion.readTextMapList(jsonArray)
                 .map { parseKey(it) }
 
         @JvmStatic

@@ -1,13 +1,13 @@
-package me.saro.jwt.store
+package me.saro.jwt.old.store
 
-import me.saro.jwt.Jwt
-import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtKey
+import me.saro.jwt.old.Jwt
+import me.saro.jwt.old.JwtAlgorithm
+import me.saro.jwt.old.JwtKey
 import me.saro.jwt.JwtUtils
 import me.saro.jwt.JwtUtils.Companion.bind
 import me.saro.jwt.JwtUtils.Companion.exec
-import me.saro.jwt.exception.JwtException
-import me.saro.jwt.exception.JwtExceptionCode
+import me.saro.jwt.old.exception.JwtException
+import me.saro.jwt.old.exception.JwtExceptionCode
 import java.time.Duration
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
@@ -16,7 +16,7 @@ class JwtKeyStoreProvider private constructor(): JwtKeyStore {
     private val writeLock = lock.writeLock()
     private val readLock = lock.readLock()
 
-    private var algorithm: JwtAlgorithm = Jwt.HS256
+    private var algorithm: JwtAlgorithm = Jwt.Companion.HS256
     private var genKey: (JwtAlgorithm) -> JwtKey = { it.newRandomKey() }
     private var list: List<JwtKey> = listOf()
 
@@ -123,7 +123,7 @@ class JwtKeyStoreProvider private constructor(): JwtKeyStore {
 
         fun build(jsonArray: String?): JwtKeyStoreProvider {
             if (!jsonArray.isNullOrBlank()) {
-                provider.putKeys(Jwt.parseKeyArray(jsonArray))
+                provider.putKeys(Jwt.Companion.parseKeyArray(jsonArray))
             }
             return provider
         }

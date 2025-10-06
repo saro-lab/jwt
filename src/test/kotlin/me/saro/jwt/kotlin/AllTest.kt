@@ -1,13 +1,13 @@
 package me.saro.jwt.kotlin
 
-import me.saro.jwt.Jwt
-import me.saro.jwt.Jwt.Companion.createJwt
-import me.saro.jwt.Jwt.Companion.parseJwt
-import me.saro.jwt.Jwt.Companion.parseKey
-import me.saro.jwt.JwtKey
-import me.saro.jwt.JwtNode
-import me.saro.jwt.exception.JwtException
-import me.saro.jwt.exception.JwtExceptionCode
+import me.saro.jwt.old.Jwt
+import me.saro.jwt.old.Jwt.Companion.createJwt
+import me.saro.jwt.old.Jwt.Companion.parseJwt
+import me.saro.jwt.old.Jwt.Companion.parseKey
+import me.saro.jwt.old.JwtKey
+import me.saro.jwt.old.JwtNode
+import me.saro.jwt.old.exception.JwtException
+import me.saro.jwt.old.exception.JwtExceptionCode
 import org.junit.jupiter.api.*
 import java.time.OffsetDateTime
 import java.util.*

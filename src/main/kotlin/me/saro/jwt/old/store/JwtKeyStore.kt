@@ -1,8 +1,8 @@
-package me.saro.jwt.store
+package me.saro.jwt.old.store
 
-import me.saro.jwt.Jwt
-import me.saro.jwt.JwtKey
-import me.saro.jwt.JwtNode
+import me.saro.jwt.old.Jwt
+import me.saro.jwt.old.JwtKey
+import me.saro.jwt.old.JwtNode
 import me.saro.jwt.JwtUtils
 
 interface JwtKeyStore {
@@ -10,7 +10,7 @@ interface JwtKeyStore {
     fun getCurrentKey(): JwtKey
     fun findKey(kid: String): JwtKey
     fun createJwt(): JwtNode.Builder = getCurrentKey().createJwt()
-    fun parseJwt(jwt: String): JwtNode = Jwt.parseJwt(jwt) { findKey(it.kid!!) }
+    fun parseJwt(jwt: String): JwtNode = Jwt.Companion.parseJwt(jwt) { findKey(it.kid!!) }
     fun getState(): JwtKeyStoreState
     fun getAllKeysForMonitor(): List<JwtKey>
     fun getExpireKeysForMonitor(): List<JwtKey> = getExpireKeysForMonitor(JwtUtils.epochSecond())

@@ -1,9 +1,9 @@
 package me.saro.jwt.kotlin
 
-import me.saro.jwt.Jwt
-import me.saro.jwt.Jwt.Companion.parseJwt
-import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtNode
+import me.saro.jwt.old.Jwt
+import me.saro.jwt.old.Jwt.Companion.parseJwt
+import me.saro.jwt.old.JwtAlgorithm
+import me.saro.jwt.old.JwtNode
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

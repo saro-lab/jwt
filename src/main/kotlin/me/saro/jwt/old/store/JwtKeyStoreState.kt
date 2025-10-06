@@ -1,4 +1,4 @@
-package me.saro.jwt.store
+package me.saro.jwt.old.store
 
 class JwtKeyStoreState(
     val storeType: String,

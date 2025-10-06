@@ -1,13 +1,17 @@
 package me.saro.jwt.kotlin
 
-import me.saro.jwt.Jwt.Companion.getAlgorithm
-import me.saro.jwt.Jwt.Companion.parseJwt
-import me.saro.jwt.Jwt.Companion.parseKey
-import me.saro.jwt.JwtKey
-import me.saro.jwt.JwtNode
-import me.saro.jwt.exception.JwtException
-import me.saro.jwt.hash.JwtHsAlgorithm
-import me.saro.jwt.keyPair.*
+import me.saro.jwt.old.Jwt.Companion.getAlgorithm
+import me.saro.jwt.old.Jwt.Companion.parseJwt
+import me.saro.jwt.old.Jwt.Companion.parseKey
+import me.saro.jwt.old.JwtKey
+import me.saro.jwt.old.JwtNode
+import me.saro.jwt.old.exception.JwtException
+import me.saro.jwt.old.hash.JwtHsAlgorithm
+import me.saro.jwt.old.keyPair.JwtEsAlgorithm
+import me.saro.jwt.old.keyPair.JwtPsAlgorithm
+import me.saro.jwt.old.keyPair.JwtPsKey
+import me.saro.jwt.old.keyPair.JwtRsAlgorithm
+import me.saro.jwt.old.keyPair.JwtRsKey
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

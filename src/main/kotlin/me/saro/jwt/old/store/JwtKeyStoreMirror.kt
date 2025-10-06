@@ -1,11 +1,11 @@
-package me.saro.jwt.store
+package me.saro.jwt.old.store
 
-import me.saro.jwt.Jwt
-import me.saro.jwt.JwtKey
+import me.saro.jwt.old.Jwt
+import me.saro.jwt.old.JwtKey
 import me.saro.jwt.JwtUtils
 import me.saro.jwt.JwtUtils.Companion.exec
-import me.saro.jwt.exception.JwtException
-import me.saro.jwt.exception.JwtExceptionCode
+import me.saro.jwt.old.exception.JwtException
+import me.saro.jwt.old.exception.JwtExceptionCode
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 class JwtKeyStoreMirror private constructor(
@@ -18,7 +18,7 @@ class JwtKeyStoreMirror private constructor(
     fun imports(jsonArray: String?): JwtKeyStore {
         if (!jsonArray.isNullOrBlank()) {
             val now = JwtUtils.epochSecond()
-            val items = Jwt.parseKeyArray(jsonArray)
+            val items = Jwt.Companion.parseKeyArray(jsonArray)
                 .filter { it.notExpired(now) }
                 .sorted()
             writeLock.exec { list = items }

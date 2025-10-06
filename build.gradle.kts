@@ -1,5 +1,5 @@
 plugins {
-	id("org.jetbrains.kotlin.jvm") version "2.1.20"
+	id("org.jetbrains.kotlin.jvm") version "2.2.20"
 	id("org.ec4j.editorconfig") version "0.1.0"
 	id("idea")
 	signing
@@ -8,7 +8,7 @@ plugins {
 
 val jwtGroupId = "me.saro"
 val jwtArtifactId = "jwt"
-val jwtVersion = "6.0.1"
+val jwtVersion = "7.0.0"
 
 repositories {
 	mavenCentral()
@@ -21,11 +21,12 @@ java {
 
 dependencies {
 	// jackson
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.0")
 
 	// test
-	testImplementation("org.junit.jupiter:junit-jupiter:5.12.0")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.0")
+    val junitVer = "6.0.0"
+	testImplementation("org.junit.jupiter:junit-jupiter:$junitVer")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitVer")
 }
 
 tasks.withType<Test> {

@@ -1,7 +1,8 @@
-package me.saro.jwt
+package me.saro.jwt.old
 
-import me.saro.jwt.exception.JwtException
-import me.saro.jwt.exception.JwtExceptionCode
+import me.saro.jwt.JwtUtils
+import me.saro.jwt.old.exception.JwtException
+import me.saro.jwt.old.exception.JwtExceptionCode
 import java.io.ByteArrayOutputStream
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
@@ -96,12 +97,12 @@ open class JwtNode internal constructor(
                 throw JwtException(JwtExceptionCode.PARSE_ERROR, "jwt must be header.payload.signature: $jwt")
             }
             val header: MutableMap<String, String> = try {
-                JwtUtils.readTextMap(JwtUtils.decodeBase64Url(jwtByte.copyOfRange(0, firstDot)))
+                JwtUtils.Companion.readTextMap(JwtUtils.Companion.decodeBase64Url(jwtByte.copyOfRange(0, firstDot)))
             } catch (e: Exception) {
                 throw JwtException(JwtExceptionCode.PARSE_ERROR, "header parse error: $jwt")
             }
             val payload: MutableMap<String, Any> = try {
-                JwtUtils.readMap(JwtUtils.decodeBase64Url(jwtByte.copyOfRange(firstDot + 1, lastDot)));
+                JwtUtils.Companion.readMap(JwtUtils.Companion.decodeBase64Url(jwtByte.copyOfRange(firstDot + 1, lastDot)));
             } catch (e: Exception) {
                 throw JwtException(JwtExceptionCode.PARSE_ERROR, "payload parse error: $jwt")
             }
@@ -175,9 +176,9 @@ open class JwtNode internal constructor(
 
         fun build(): String {
             val jwt = ByteArrayOutputStream(2000)
-            jwt.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(header)))
+            jwt.write(JwtUtils.Companion.encodeToBase64UrlWop(JwtUtils.Companion.writeValueAsBytes(header)))
             jwt.write(DOT_INT)
-            jwt.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(payload)))
+            jwt.write(JwtUtils.Companion.encodeToBase64UrlWop(JwtUtils.Companion.writeValueAsBytes(payload)))
 
             val signature = key.signature(jwt.toByteArray())
             jwt.write(DOT_INT)

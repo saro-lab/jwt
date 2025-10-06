@@ -1,7 +1,7 @@
-package me.saro.jwt.keyPair
+package me.saro.jwt.old.keyPair
 
-import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtKey
+import me.saro.jwt.old.JwtAlgorithm
+import me.saro.jwt.old.JwtKey
 import me.saro.jwt.JwtUtils
 import me.saro.jwt.JwtUtils.Companion.bind
 import java.security.*

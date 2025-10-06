@@ -1,7 +1,7 @@
 package me.saro.jwt.kotlin
 
-import me.saro.jwt.Jwt
-import me.saro.jwt.JwtNode
+import me.saro.jwt.old.Jwt
+import me.saro.jwt.old.JwtNode
 import org.junit.jupiter.api.*
 import java.time.OffsetDateTime
 

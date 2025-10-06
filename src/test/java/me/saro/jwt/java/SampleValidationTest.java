@@ -1,13 +1,13 @@
 package me.saro.jwt.java;
 
-import me.saro.jwt.Jwt;
-import me.saro.jwt.JwtKey;
-import me.saro.jwt.JwtNode;
-import me.saro.jwt.exception.JwtException;
-import me.saro.jwt.hash.JwtHsAlgorithm;
-import me.saro.jwt.keyPair.JwtEsAlgorithm;
-import me.saro.jwt.keyPair.JwtPsAlgorithm;
-import me.saro.jwt.keyPair.JwtRsAlgorithm;
+import me.saro.jwt.old.Jwt;
+import me.saro.jwt.old.JwtKey;
+import me.saro.jwt.old.JwtNode;
+import me.saro.jwt.old.exception.JwtException;
+import me.saro.jwt.old.hash.JwtHsAlgorithm;
+import me.saro.jwt.old.keyPair.JwtEsAlgorithm;
+import me.saro.jwt.old.keyPair.JwtPsAlgorithm;
+import me.saro.jwt.old.keyPair.JwtRsAlgorithm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
