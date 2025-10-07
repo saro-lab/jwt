@@ -16,7 +16,7 @@ open class JwtReader internal constructor(
     firstDot: Int,
     lastDot: Int,
 ) {
-    val kid: String? get() = header["kid"]
+    val kid: String? get() = header["kid"]z
 
     val jwtBody: ByteArray = jwtByte.copyOfRange(0, lastDot)
     val jwtSignature: ByteArray = jwtByte.copyOfRange(lastDot + 1, jwtByte.size)
