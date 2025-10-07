@@ -46,14 +46,16 @@ abstract class JwtPairKey(
             }
 
         @JvmStatic
-        fun generateRsKeyPair(algorithm: JwtAlgorithm): JwtKeyPair {
+        fun generateRsKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
             val kg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
-            when (algorithm) {
-                JwtAlgorithm.RS256 -> kg.initialize(ECGenParameterSpec("secp256r1"))
-                JwtAlgorithm.ES384 -> kg.initialize(ECGenParameterSpec("secp384r1"))
-                JwtAlgorithm.ES512 -> kg.initialize(ECGenParameterSpec("secp521r1"))
-                else -> throw JwtIllegalArgumentException("$algorithm does not support jwt ES algorithm")
-            }
+            kg.initialize(bit)
+            return toJwtKeyPair(algorithm, kg.genKeyPair())
+        }
+
+        @JvmStatic
+        fun generatePsKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
+            val kg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+            kg.initialize(bit)
             return toJwtKeyPair(algorithm, kg.genKeyPair())
         }
 
@@ -69,7 +71,16 @@ abstract class JwtPairKey(
             return toJwtKeyPair(algorithm, kg.genKeyPair())
         }
 
-        private fun toJwtKeyPair(algorithm: JwtAlgorithm, pair: KeyPair): JwtKeyPair {
+        @JvmStatic
+        fun generateKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
+            val kg: KeyPairGenerator = KeyPairGenerator.getInstance("EC")
+            when (algorithm) {
+                JwtAlgorithm.ES256 -> kg.initialize(ECGenParameterSpec("secp256r1"))
+                JwtAlgorithm.ES384 -> kg.initialize(ECGenParameterSpec("secp384r1"))
+                JwtAlgorithm.ES512 -> kg.initialize(ECGenParameterSpec("secp521r1"))
+                else -> throw JwtIllegalArgumentException("$algorithm does not support jwt ES algorithm")
+            }
+            val pair: KeyPair = kg.genKeyPair()
             return JwtKeyPair(
                 JwtPairPublicKey(algorithm, pair.public),
                 JwtPairPrivateKey(algorithm, pair.private),
