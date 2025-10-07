@@ -82,10 +82,11 @@ abstract class JwtPairKey(
 
         @JvmStatic
         fun generateKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
+            checkSecureKeySize(algorithm, bit)
             val kg1: KeyPairGenerator = when(algorithm.algorithm) {
                 "ES" -> {
                     KeyPairGenerator.getInstance("EC")
-                        .apply {  }
+                        .apply { initialize(getECGenParameterSpec(algorithm)) }
                 }
                 "RS", "PS" -> KeyPairGenerator.getInstance("RSA")
                 else -> throw JwtIllegalArgumentException("$algorithm does not support key generator")
@@ -104,7 +105,7 @@ abstract class JwtPairKey(
         }
 
         private fun checkSecureKeySize(algorithm: JwtAlgorithm, bit: Int) {
-
+            getECGenParameterSpec
         }
 
         private fun getKeyPairGenerator(algorithm: JwtAlgorithm): KeyPairGenerator = when(algorithm.algorithm) {
