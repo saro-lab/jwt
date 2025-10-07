@@ -105,7 +105,13 @@ abstract class JwtPairKey(
         }
 
         private fun checkSecureKeySize(algorithm: JwtAlgorithm, bit: Int) {
-            getECGenParameterSpec
+            if (algorithm.algorithm == "ES") {
+                if (bit != 0) {
+                    throw JwtIllegalArgumentException("$algorithm does not support bit")
+                }
+            } else if (algorithm.algorithm in listOf("RS", "PS")) {
+
+            }
         }
 
         private fun getKeyPairGenerator(algorithm: JwtAlgorithm): KeyPairGenerator = when(algorithm.algorithm) {
