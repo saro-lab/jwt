@@ -46,6 +46,15 @@ abstract class JwtPairKey(
             }
 
         @JvmStatic
+        fun getECGenParameterSpec(algorithm: JwtAlgorithm): ECGenParameterSpec =
+            when (algorithm) {
+                JwtAlgorithm.ES256 -> ECGenParameterSpec("secp256r1")
+                JwtAlgorithm.ES384 -> ECGenParameterSpec("secp384r1")
+                JwtAlgorithm.ES512 -> ECGenParameterSpec("secp521r1")
+                else -> throw JwtIllegalArgumentException("$algorithm does not support jwt PS algorithm")
+            }
+
+        @JvmStatic
         fun generateRsKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
             val kg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
             kg.initialize(bit)
@@ -73,8 +82,11 @@ abstract class JwtPairKey(
 
         @JvmStatic
         fun generateKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
-            val kg: KeyPairGenerator = when(algorithm.algorithm) {
-                "ES" -> KeyPairGenerator.getInstance("EC")
+            val kg1: KeyPairGenerator = when(algorithm.algorithm) {
+                "ES" -> {
+                    KeyPairGenerator.getInstance("EC")
+                        .apply {  }
+                }
                 "RS", "PS" -> KeyPairGenerator.getInstance("RSA")
                 else -> throw JwtIllegalArgumentException("$algorithm does not support key generator")
             }
