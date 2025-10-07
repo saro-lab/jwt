@@ -1,8 +1,9 @@
-package me.saro.jwt.key
+package me.saro.jwt.key.pair
 
 import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtAlgorithm.*
 import me.saro.jwt.exception.JwtIllegalArgumentException
+import me.saro.jwt.key.JwtKey
+import me.saro.jwt.key.JwtPairKeySet
 import java.security.Key
 import java.security.KeyFactory
 import java.security.Signature
@@ -24,9 +25,33 @@ abstract class JwtPairKey(
                 Signature.getInstance("RSASSA-PSS")
                     .apply {
                         when (this@JwtPairKey.algorithm) {
-                            PS256 -> setParameter(PSSParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, 32, 1))
-                            PS384 -> setParameter(PSSParameterSpec("SHA-384", "MGF1", MGF1ParameterSpec.SHA384, 48, 1))
-                            PS512 -> setParameter(PSSParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, 64, 1))
+                            JwtAlgorithm.PS256 -> setParameter(
+                                PSSParameterSpec(
+                                    "SHA-256",
+                                    "MGF1",
+                                    MGF1ParameterSpec.SHA256,
+                                    32,
+                                    1
+                                )
+                            )
+                            JwtAlgorithm.PS384 -> setParameter(
+                                PSSParameterSpec(
+                                    "SHA-384",
+                                    "MGF1",
+                                    MGF1ParameterSpec.SHA384,
+                                    48,
+                                    1
+                                )
+                            )
+                            JwtAlgorithm.PS512 -> setParameter(
+                                PSSParameterSpec(
+                                    "SHA-512",
+                                    "MGF1",
+                                    MGF1ParameterSpec.SHA512,
+                                    64,
+                                    1
+                                )
+                            )
                             else -> throw JwtIllegalArgumentException("$algorithm does not support jwt algorithm")
                         }
                     }
@@ -42,5 +67,10 @@ abstract class JwtPairKey(
                 "RS", "PS" -> KeyFactory.getInstance("RSA")
                 else -> throw JwtIllegalArgumentException("$algorithm does not support key factory")
             }
+
+        @JvmStatic
+        fun genRandomKey(algorithm: JwtAlgorithm): JwtPairKeySet {
+
+        }
     }
 }

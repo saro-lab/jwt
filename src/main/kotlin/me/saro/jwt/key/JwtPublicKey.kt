@@ -5,6 +5,7 @@ import me.saro.jwt.JwtUtils.Companion.decodeBase64
 import me.saro.jwt.JwtUtils.Companion.decodeBase64Url
 import me.saro.jwt.JwtUtils.Companion.normalizePem
 import me.saro.jwt.exception.JwtIllegalArgumentException
+import me.saro.jwt.key.pair.JwtPairKey
 import java.security.Key
 import java.security.PublicKey
 import java.security.Signature
