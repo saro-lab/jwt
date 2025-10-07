@@ -44,7 +44,7 @@ class JwtUtils {
 
 
         @JvmStatic
-        fun normalizePem(key: String) = key.replace(REGEX_PEM_NORMALIZE, "")
+        fun normalizePem(key: String): String = key.replace(REGEX_PEM_NORMALIZE, "")
 
         @JvmStatic
         fun writeValueAsString(obj: Any): String = OBJECT_MAPPER.writeValueAsString(obj)

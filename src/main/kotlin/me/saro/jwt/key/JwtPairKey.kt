@@ -2,9 +2,13 @@ package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
 import me.saro.jwt.exception.JwtIllegalArgumentException
+import me.saro.jwt.old.keyPair.JwtEsKey
 import java.security.Key
 import java.security.KeyFactory
+import java.security.KeyPair
+import java.security.KeyPairGenerator
 import java.security.Signature
+import java.security.spec.ECGenParameterSpec
 import java.security.spec.MGF1ParameterSpec
 import java.security.spec.PSSParameterSpec
 
@@ -19,41 +23,7 @@ abstract class JwtPairKey(
         when (algorithm.algorithm) {
             "ES" -> Signature.getInstance("SHA${algorithm.bit}withECDSAinP1363Format")
             "RS" -> Signature.getInstance("SHA${algorithm.bit}withRSA")
-            "PS" -> {
-                Signature.getInstance("RSASSA-PSS")
-                    .apply {
-                        when (this@JwtPairKey.algorithm) {
-                            JwtAlgorithm.PS256 -> setParameter(
-                                PSSParameterSpec(
-                                    "SHA-256",
-                                    "MGF1",
-                                    MGF1ParameterSpec.SHA256,
-                                    32,
-                                    1
-                                )
-                            )
-                            JwtAlgorithm.PS384 -> setParameter(
-                                PSSParameterSpec(
-                                    "SHA-384",
-                                    "MGF1",
-                                    MGF1ParameterSpec.SHA384,
-                                    48,
-                                    1
-                                )
-                            )
-                            JwtAlgorithm.PS512 -> setParameter(
-                                PSSParameterSpec(
-                                    "SHA-512",
-                                    "MGF1",
-                                    MGF1ParameterSpec.SHA512,
-                                    64,
-                                    1
-                                )
-                            )
-                            else -> throw JwtIllegalArgumentException("$algorithm does not support jwt algorithm")
-                        }
-                    }
-            }
+            "PS" -> Signature.getInstance("RSASSA-PSS").apply { setParameter(getPSSParameterSpec(this@JwtPairKey.algorithm)) }
             else -> throw JwtIllegalArgumentException("$algorithm does not support jwt algorithm")
         }
 
@@ -65,5 +35,45 @@ abstract class JwtPairKey(
                 "RS", "PS" -> KeyFactory.getInstance("RSA")
                 else -> throw JwtIllegalArgumentException("$algorithm does not support key factory")
             }
+
+        @JvmStatic
+        fun getPSSParameterSpec(algorithm: JwtAlgorithm): PSSParameterSpec =
+            when (algorithm) {
+                JwtAlgorithm.PS256 -> PSSParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, 32, 1)
+                JwtAlgorithm.PS384 -> PSSParameterSpec("SHA-384", "MGF1", MGF1ParameterSpec.SHA384, 48, 1)
+                JwtAlgorithm.PS512 -> PSSParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, 64, 1)
+                else -> throw JwtIllegalArgumentException("$algorithm does not support jwt PS algorithm")
+            }
+
+        @JvmStatic
+        fun generateRsKeyPair(algorithm: JwtAlgorithm): JwtKeyPair {
+            val kg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+            when (algorithm) {
+                JwtAlgorithm.RS256 -> kg.initialize(ECGenParameterSpec("secp256r1"))
+                JwtAlgorithm.ES384 -> kg.initialize(ECGenParameterSpec("secp384r1"))
+                JwtAlgorithm.ES512 -> kg.initialize(ECGenParameterSpec("secp521r1"))
+                else -> throw JwtIllegalArgumentException("$algorithm does not support jwt ES algorithm")
+            }
+            return toJwtKeyPair(algorithm, kg.genKeyPair())
+        }
+
+        @JvmStatic
+        fun generateEsKeyPair(algorithm: JwtAlgorithm): JwtKeyPair {
+            val kg: KeyPairGenerator = KeyPairGenerator.getInstance("EC")
+            when (algorithm) {
+                JwtAlgorithm.ES256 -> kg.initialize(ECGenParameterSpec("secp256r1"))
+                JwtAlgorithm.ES384 -> kg.initialize(ECGenParameterSpec("secp384r1"))
+                JwtAlgorithm.ES512 -> kg.initialize(ECGenParameterSpec("secp521r1"))
+                else -> throw JwtIllegalArgumentException("$algorithm does not support jwt ES algorithm")
+            }
+            return toJwtKeyPair(algorithm, kg.genKeyPair())
+        }
+
+        private fun toJwtKeyPair(algorithm: JwtAlgorithm, pair: KeyPair): JwtKeyPair {
+            return JwtKeyPair(
+                JwtPairPublicKey(algorithm, pair.public),
+                JwtPairPrivateKey(algorithm, pair.private),
+            )
+        }
     }
 }

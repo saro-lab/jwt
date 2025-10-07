@@ -2,7 +2,11 @@ package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
 import me.saro.jwt.JwtUtils
+import me.saro.jwt.JwtUtils.Companion.decodeBase64
+import me.saro.jwt.JwtUtils.Companion.decodeHex
+import me.saro.jwt.JwtUtils.Companion.normalizePem
 import java.security.Key
+import java.security.KeyPairGenerator
 import java.util.*
 
 interface JwtKey {
@@ -13,13 +17,20 @@ interface JwtKey {
     fun toHex(): String = JwtUtils.encodeHex(toBytes())
 
     companion object {
-        @JvmStatic fun parseHs(algorithm: JwtAlgorithm, key: ByteArray): JwtKey = JwtHashKey(algorithm, key)
-        @JvmStatic fun parseHsByHex(algorithm: JwtAlgorithm, key: String): JwtKey = JwtHashKey(algorithm, JwtUtils.decodeHex(key))
-        @JvmStatic fun parseHsByBase64(algorithm: JwtAlgorithm, key: String): JwtKey = JwtHashKey(algorithm, JwtUtils.decodeBase64(key))
-        @JvmStatic fun parseHsByText(algorithm: JwtAlgorithm, key: String): JwtKey = JwtHashKey(algorithm, key.toByteArray())
-        @JvmStatic fun generateHs(algorithm: JwtAlgorithm, byteSize: Int): JwtHashKey = JwtHashKey(algorithm, ByteArray(byteSize).apply { Random().nextBytes(this) })
+        // hash key
+        @JvmStatic fun parseHash(algorithm: JwtAlgorithm, key: ByteArray): JwtKey = JwtHashKey(algorithm, key)
+        @JvmStatic fun parseHashByHex(algorithm: JwtAlgorithm, key: String): JwtKey = JwtHashKey(algorithm, decodeHex(key))
+        @JvmStatic fun parseHashByBase64(algorithm: JwtAlgorithm, key: String): JwtKey = JwtHashKey(algorithm, decodeBase64(key))
+        @JvmStatic fun parseHashByText(algorithm: JwtAlgorithm, key: String): JwtKey = JwtHashKey(algorithm, key.toByteArray())
+        @JvmStatic fun generateHash(algorithm: JwtAlgorithm, byteSize: Int): JwtHashKey = JwtHashKey(algorithm, ByteArray(byteSize).apply { Random().nextBytes(this) })
 
+        // pair key
+        @JvmStatic fun parsePairPublic(algorithm: JwtAlgorithm, key: ByteArray): JwtPairPublicKey = JwtPairPublicKey(algorithm, key)
+        @JvmStatic fun parsePairPublicByPem(algorithm: JwtAlgorithm, key: String): JwtPairPublicKey = JwtPairPublicKey(algorithm, decodeBase64(normalizePem(key)))
+        @JvmStatic fun parsePairPrivate(algorithm: JwtAlgorithm, key: ByteArray): JwtPairPrivateKey = JwtPairPrivateKey(algorithm, key)
+        @JvmStatic fun parsePairPrivateByPem(algorithm: JwtAlgorithm, key: String): JwtPairPrivateKey = JwtPairPrivateKey(algorithm, decodeBase64(normalizePem(key)))
+        @JvmStatic fun generateEsKeyPair(bit: Int): JwtKeyPair {
 
-        fun parsePair(key: ByteArray)
+        }
     }
 }

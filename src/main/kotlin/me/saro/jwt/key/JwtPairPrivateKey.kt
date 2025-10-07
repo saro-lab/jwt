@@ -1,38 +1,30 @@
 package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtUtils.Companion.decodeBase64
 import me.saro.jwt.JwtUtils.Companion.encodeToBase64UrlWop
-import me.saro.jwt.JwtUtils.Companion.normalizePem
 import me.saro.jwt.exception.JwtIllegalArgumentException
 import java.security.Key
 import java.security.PrivateKey
 import java.security.Signature
 import java.security.spec.X509EncodedKeySpec
 
-class JwtPairPrivateKey private constructor(
+class JwtPairPrivateKey(
     override val algorithm: JwtAlgorithm,
     override val key: Key,
 ): JwtPairKey(algorithm, key), JwtSignatureKey {
+
+    constructor(algorithm: JwtAlgorithm, key: ByteArray): this(algorithm, getKeyFactory(algorithm).generatePrivate(X509EncodedKeySpec(key)))
+
+    init {
+        if (algorithm.keyType != "PAIR") {
+            throw JwtIllegalArgumentException("$algorithm does not jwt pair key algorithm")
+        }
+    }
 
     override fun createSignature(body: ByteArray): ByteArray {
         val signature: Signature = getSignature()
         signature.initSign(key as PrivateKey)
         signature.update(body)
         return encodeToBase64UrlWop(signature.sign())
-    }
-
-    companion object {
-        @JvmStatic
-        fun create(algorithm: JwtAlgorithm, key: ByteArray): JwtPairPrivateKey {
-            if (algorithm.algorithm != "PUBLIC") {
-                throw JwtIllegalArgumentException("$algorithm does not jwt private key algorithm")
-            }
-            return JwtPairPrivateKey(algorithm, getKeyFactory(algorithm).generatePrivate(X509EncodedKeySpec(key)))
-        }
-
-        @JvmStatic
-        fun create(algorithm: JwtAlgorithm, key: String): JwtPairPrivateKey =
-            create(algorithm, decodeBase64(normalizePem(key)))
     }
 }
