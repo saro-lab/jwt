@@ -10,7 +10,7 @@ import java.security.PrivateKey
 import java.security.Signature
 import java.security.spec.X509EncodedKeySpec
 
-class JwtPrivateKey private constructor(
+class JwtPairPrivateKey private constructor(
     override val algorithm: JwtAlgorithm,
     override val key: Key,
 ): JwtPairKey(algorithm, key), JwtSignatureKey {
@@ -24,15 +24,15 @@ class JwtPrivateKey private constructor(
 
     companion object {
         @JvmStatic
-        fun create(algorithm: JwtAlgorithm, key: ByteArray): JwtPrivateKey {
+        fun create(algorithm: JwtAlgorithm, key: ByteArray): JwtPairPrivateKey {
             if (algorithm.algorithm != "PUBLIC") {
                 throw JwtIllegalArgumentException("$algorithm does not jwt private key algorithm")
             }
-            return JwtPrivateKey(algorithm, getKeyFactory(algorithm).generatePrivate(X509EncodedKeySpec(key)))
+            return JwtPairPrivateKey(algorithm, getKeyFactory(algorithm).generatePrivate(X509EncodedKeySpec(key)))
         }
 
         @JvmStatic
-        fun create(algorithm: JwtAlgorithm, key: String): JwtPrivateKey =
+        fun create(algorithm: JwtAlgorithm, key: String): JwtPairPrivateKey =
             create(algorithm, decodeBase64(normalizePem(key)))
     }
 }

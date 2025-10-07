@@ -65,10 +65,5 @@ abstract class JwtPairKey(
                 "RS", "PS" -> KeyFactory.getInstance("RSA")
                 else -> throw JwtIllegalArgumentException("$algorithm does not support key factory")
             }
-
-        @JvmStatic
-        fun genRandomKey(algorithm: JwtAlgorithm): JwtPairKeySet {
-
-        }
     }
 }
