@@ -1,9 +1,7 @@
-package me.saro.jwt.key.pair
+package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
 import me.saro.jwt.exception.JwtIllegalArgumentException
-import me.saro.jwt.key.JwtKey
-import me.saro.jwt.key.JwtPairKeySet
 import java.security.Key
 import java.security.KeyFactory
 import java.security.Signature

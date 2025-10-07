@@ -1,16 +1,14 @@
-package me.saro.jwt.key.pair
+package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
 import me.saro.jwt.exception.JwtIllegalArgumentException
-import me.saro.jwt.key.JwtKey
-import me.saro.jwt.key.JwtPairKeySet
 import java.security.Key
 import java.security.KeyFactory
 import java.security.Signature
 import java.security.spec.MGF1ParameterSpec
 import java.security.spec.PSSParameterSpec
 
-abstract class JwtEsKey(
+abstract class JwtPairKey2(
     override val algorithm: JwtAlgorithm,
     override val key: Key,
 ): JwtKey {
@@ -24,7 +22,7 @@ abstract class JwtEsKey(
             "PS" -> {
                 Signature.getInstance("RSASSA-PSS")
                     .apply {
-                        when (this@JwtEsKey.algorithm) {
+                        when (this@JwtPairKey2.algorithm) {
                             JwtAlgorithm.PS256 -> setParameter(
                                 PSSParameterSpec(
                                     "SHA-256",

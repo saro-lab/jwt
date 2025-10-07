@@ -1,13 +1,11 @@
-package me.saro.jwt.key.hash
+package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
 import me.saro.jwt.exception.JwtIllegalArgumentException
-import me.saro.jwt.key.JwtSignatureKey
-import me.saro.jwt.key.JwtVerifyKey
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
-class JwtHsKey private constructor(
+class JwtHashKey private constructor(
     override val algorithm: JwtAlgorithm,
     override val key: SecretKeySpec,
 ): JwtSignatureKey, JwtVerifyKey {
