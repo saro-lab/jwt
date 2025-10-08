@@ -1,20 +1,19 @@
 package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtUtils
-import me.saro.jwt.JwtUtils.Companion.decodeBase64
-import me.saro.jwt.JwtUtils.Companion.decodeHex
-import me.saro.jwt.JwtUtils.Companion.normalizePem
+import me.saro.jwt.Jwt
+import me.saro.jwt.Jwt.Companion.decodeBase64
+import me.saro.jwt.Jwt.Companion.decodeHex
+import me.saro.jwt.Jwt.Companion.normalizePem
 import java.security.Key
-import java.security.KeyPairGenerator
 import java.util.*
 
 interface JwtKey {
     val algorithm: JwtAlgorithm
     val key: Key
     fun toBytes(): ByteArray = key.encoded
-    fun toBase64(): String = JwtUtils.encodeToBase64String(toBytes())
-    fun toHex(): String = JwtUtils.encodeHex(toBytes())
+    fun toBase64(): String = Jwt.encodeToBase64String(toBytes())
+    fun toHex(): String = Jwt.encodeHex(toBytes())
 
     companion object {
         // hash key
@@ -29,8 +28,7 @@ interface JwtKey {
         @JvmStatic fun parsePairPublicByPem(algorithm: JwtAlgorithm, key: String): JwtPairPublicKey = JwtPairPublicKey(algorithm, decodeBase64(normalizePem(key)))
         @JvmStatic fun parsePairPrivate(algorithm: JwtAlgorithm, key: ByteArray): JwtPairPrivateKey = JwtPairPrivateKey(algorithm, key)
         @JvmStatic fun parsePairPrivateByPem(algorithm: JwtAlgorithm, key: String): JwtPairPrivateKey = JwtPairPrivateKey(algorithm, decodeBase64(normalizePem(key)))
-        @JvmStatic fun generateEsKeyPair(bit: Int): JwtKeyPair {
-
-        }
+        @JvmStatic fun generateKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair = JwtPairKey.generateKeyPair(algorithm, bit)
+        @JvmStatic fun generateKeyPair(algorithm: JwtAlgorithm): JwtKeyPair = JwtPairKey.generateKeyPair(algorithm)
     }
 }

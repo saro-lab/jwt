@@ -1,13 +1,9 @@
 package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
+import me.saro.jwt.JwtAlgorithm.*
 import me.saro.jwt.exception.JwtIllegalArgumentException
-import me.saro.jwt.old.keyPair.JwtEsKey
-import java.security.Key
-import java.security.KeyFactory
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.Signature
+import java.security.*
 import java.security.spec.ECGenParameterSpec
 import java.security.spec.MGF1ParameterSpec
 import java.security.spec.PSSParameterSpec
@@ -39,85 +35,58 @@ abstract class JwtPairKey(
         @JvmStatic
         fun getPSSParameterSpec(algorithm: JwtAlgorithm): PSSParameterSpec =
             when (algorithm) {
-                JwtAlgorithm.PS256 -> PSSParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, 32, 1)
-                JwtAlgorithm.PS384 -> PSSParameterSpec("SHA-384", "MGF1", MGF1ParameterSpec.SHA384, 48, 1)
-                JwtAlgorithm.PS512 -> PSSParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, 64, 1)
+                PS256 -> PSSParameterSpec("SHA-256", "MGF1", MGF1ParameterSpec.SHA256, 32, 1)
+                PS384 -> PSSParameterSpec("SHA-384", "MGF1", MGF1ParameterSpec.SHA384, 48, 1)
+                PS512 -> PSSParameterSpec("SHA-512", "MGF1", MGF1ParameterSpec.SHA512, 64, 1)
                 else -> throw JwtIllegalArgumentException("$algorithm does not support jwt PS algorithm")
             }
 
         @JvmStatic
         fun getECGenParameterSpec(algorithm: JwtAlgorithm): ECGenParameterSpec =
             when (algorithm) {
-                JwtAlgorithm.ES256 -> ECGenParameterSpec("secp256r1")
-                JwtAlgorithm.ES384 -> ECGenParameterSpec("secp384r1")
-                JwtAlgorithm.ES512 -> ECGenParameterSpec("secp521r1")
+                ES256 -> ECGenParameterSpec("secp256r1")
+                ES384 -> ECGenParameterSpec("secp384r1")
+                ES512 -> ECGenParameterSpec("secp521r1")
                 else -> throw JwtIllegalArgumentException("$algorithm does not support jwt PS algorithm")
             }
 
         @JvmStatic
-        fun generateRsKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
-            val kg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
-            kg.initialize(bit)
-            return toJwtKeyPair(algorithm, kg.genKeyPair())
-        }
-
-        @JvmStatic
-        fun generatePsKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
-            val kg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
-            kg.initialize(bit)
-            return toJwtKeyPair(algorithm, kg.genKeyPair())
-        }
-
-        @JvmStatic
-        fun generateEsKeyPair(algorithm: JwtAlgorithm): JwtKeyPair {
-            val kg: KeyPairGenerator = KeyPairGenerator.getInstance("EC")
-            when (algorithm) {
-                JwtAlgorithm.ES256 -> kg.initialize(ECGenParameterSpec("secp256r1"))
-                JwtAlgorithm.ES384 -> kg.initialize(ECGenParameterSpec("secp384r1"))
-                JwtAlgorithm.ES512 -> kg.initialize(ECGenParameterSpec("secp521r1"))
-                else -> throw JwtIllegalArgumentException("$algorithm does not support jwt ES algorithm")
-            }
-            return toJwtKeyPair(algorithm, kg.genKeyPair())
-        }
-
-        @JvmStatic
         fun generateKeyPair(algorithm: JwtAlgorithm, bit: Int): JwtKeyPair {
             checkSecureKeySize(algorithm, bit)
-            val kg1: KeyPairGenerator = when(algorithm.algorithm) {
-                "ES" -> {
-                    KeyPairGenerator.getInstance("EC")
-                        .apply { initialize(getECGenParameterSpec(algorithm)) }
-                }
-                "RS", "PS" -> KeyPairGenerator.getInstance("RSA")
+            val kg: KeyPairGenerator = when(algorithm.algorithm) {
+                "ES" -> KeyPairGenerator.getInstance("EC").apply { initialize(getECGenParameterSpec(algorithm)) }
+                "RS", "PS" -> KeyPairGenerator.getInstance("RSA").apply { initialize(bit) }
                 else -> throw JwtIllegalArgumentException("$algorithm does not support key generator")
             }
-            when (algorithm) {
-                JwtAlgorithm.ES256 -> kg.initialize(ECGenParameterSpec("secp256r1"))
-                JwtAlgorithm.ES384 -> kg.initialize(ECGenParameterSpec("secp384r1"))
-                JwtAlgorithm.ES512 -> kg.initialize(ECGenParameterSpec("secp521r1"))
-                else -> throw JwtIllegalArgumentException("$algorithm does not support jwt ES algorithm")
-            }
             val pair: KeyPair = kg.genKeyPair()
-            return JwtKeyPair(
-                JwtPairPublicKey(algorithm, pair.public),
-                JwtPairPrivateKey(algorithm, pair.private),
-            )
+            return JwtKeyPair(JwtPairPublicKey(algorithm, pair.public), JwtPairPrivateKey(algorithm, pair.private))
+        }
+
+        @JvmStatic
+        fun generateKeyPair(algorithm: JwtAlgorithm): JwtKeyPair {
+            val bit = when (algorithm) {
+                ES256, ES384, ES512 -> 0
+                RS256, PS256 -> 2048
+                RS384, PS384 -> 3072
+                RS512, PS512 -> 4096
+                else -> throw JwtIllegalArgumentException("$algorithm does not support key generator")
+            }
+            return generateKeyPair(algorithm, bit)
         }
 
         private fun checkSecureKeySize(algorithm: JwtAlgorithm, bit: Int) {
-            if (algorithm.algorithm == "ES") {
-                if (bit != 0) {
-                    throw JwtIllegalArgumentException("$algorithm does not support bit")
+            when (algorithm.algorithm) {
+                "ES" -> {
+                    if (bit != 0) {
+                        throw JwtIllegalArgumentException("$algorithm does not support bit, please set 0")
+                    }
                 }
-            } else if (algorithm.algorithm in listOf("RS", "PS")) {
-
+                "RS", "PS" -> {
+                    if (bit < 2048) {
+                        throw JwtIllegalArgumentException("It is recommended to use a key size of at least 2048 bits.")
+                    }
+                }
             }
-        }
-
-        private fun getKeyPairGenerator(algorithm: JwtAlgorithm): KeyPairGenerator = when(algorithm.algorithm) {
-            "ES" -> KeyPairGenerator.getInstance("EC")
-            "RS", "PS" -> KeyPairGenerator.getInstance("RSA")
-            else -> throw JwtIllegalArgumentException("$algorithm does not support key generator")
         }
     }
 }
