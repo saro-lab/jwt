@@ -25,28 +25,7 @@
 //        return Jwt.parseJwt(jwt, node -> Jwt.parseKey(keyMap));
 //    }
 //
-//    @Test
-//    @DisplayName("[Java] ES256 check jwt.io example")
-//    public void es256() {
-//        String jwt = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.tyh-VfuzIxCyGYDlkBA7DfyjrqmSHu6pQ2hoZuFqUSLPNY2N0mpHb3nk5K17HWP_3cYHBw7AhHale5wky6-sVA";
-//        String publicKey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==";
-//        String privateKey = "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgevZzL1gdAFr88hb2OF/2NxApJCzGCEDdfSp6VQO30hyhRANCAAQRWz+jn65BtOMvdyHKcvjBeBSDZH2r1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G";
-//
-//        JwtEsAlgorithm alg = Assertions.assertDoesNotThrow(() -> Jwt.getAlgorithm("ES256"));
-//        Map<String, String> map = Map.of(
-//                "alg", alg.getAlgorithmFullName(),
-//                "pubKey", publicKey,
-//                "priKey", privateKey
-//        );
-//        JwtKey key = Assertions.assertDoesNotThrow(alg::newRandomKey);
-//        Assertions.assertThrows(JwtException.class, () -> parseJwt(jwt, key));
-//        JwtNode node = Assertions.assertDoesNotThrow(() -> parseJwt(jwt, map));
-//        Assertions.assertEquals("1234567890", node.getSubject());
-//        Assertions.assertEquals("John Doe", node.claimString("name"));
-//        Assertions.assertEquals(true, node.claimBoolean("admin"));
-//        Assertions.assertEquals(1516239022, node.claimInt("iat"));
-//        System.out.println("ES256 jwt.io example - pass");
-//    }
+
 //
 //    @Test
 //    @DisplayName("[Java] ES384 check jwt.io example")
@@ -94,53 +73,7 @@
 //        System.out.println("ES512 jwt.io example - pass");
 //    }
 //
-//    @Test
-//    @DisplayName("[Java] HS256 check jwt.io example")
-//    public void hs256() {
-//        String jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-//        JwtHsAlgorithm alg = Assertions.assertDoesNotThrow(() -> Jwt.getAlgorithm("HS256"));
-//        JwtKey checkKey = alg.toKeyByText("your-256-bit-secret");
-//
-//        JwtKey key = Assertions.assertDoesNotThrow(() -> alg.newRandomJwtKey(10));
-//        Assertions.assertThrows(JwtException.class, () -> parseJwt(jwt, key));
-//        JwtNode node = Assertions.assertDoesNotThrow(() -> parseJwt(jwt, checkKey));
-//        Assertions.assertEquals("1234567890", node.getSubject());
-//        Assertions.assertEquals("John Doe", node.claimString("name"));
-//        Assertions.assertEquals(1516239022, node.claimInt("iat"));
-//        System.out.println("HS256 jwt.io example - pass");
-//    }
-//
-//    @Test
-//    @DisplayName("[Java] HS384 check jwt.io example")
-//    public void hs384() {
-//        String jwt = "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.bQTnz6AuMJvmXXQsVPrxeQNvzDkimo7VNXxHeSBfClLufmCVZRUuyTwJF311JHuh";
-//        JwtHsAlgorithm alg = Assertions.assertDoesNotThrow(() -> Jwt.getAlgorithm("HS384"));
-//        JwtKey checkKey = alg.toKeyByText("your-384-bit-secret");
-//
-//        JwtKey key = Assertions.assertDoesNotThrow(() -> alg.newRandomJwtKey(10));
-//        Assertions.assertThrows(JwtException.class, () -> parseJwt(jwt, key));
-//        JwtNode node = Assertions.assertDoesNotThrow(() -> parseJwt(jwt, checkKey));
-//        Assertions.assertEquals("1234567890", node.getSubject());
-//        Assertions.assertEquals("John Doe", node.claimString("name"));
-//        Assertions.assertEquals(1516239022, node.claimInt("iat"));
-//        System.out.println("HS384 jwt.io example - pass");
-//    }
-//
-//    @Test
-//    @DisplayName("[Java] HS512 check jwt.io example")
-//    public void hs512() {
-//        String jwt = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.VFb0qJ1LRg_4ujbZoRMXnVkUgiuKq5KxWqNdbKq_G9Vvz-S1zZa9LPxtHWKa64zDl2ofkT8F6jBt_K4riU-fPg";
-//        JwtHsAlgorithm alg = Assertions.assertDoesNotThrow(() -> Jwt.getAlgorithm("HS512"));
-//        JwtKey checkKey = alg.toKeyByText("your-512-bit-secret");
-//
-//        JwtKey key = Assertions.assertDoesNotThrow(() -> alg.newRandomJwtKey(10));
-//        Assertions.assertThrows(JwtException.class, () -> parseJwt(jwt, key));
-//        JwtNode node = Assertions.assertDoesNotThrow(() -> parseJwt(jwt, checkKey));
-//        Assertions.assertEquals("1234567890", node.getSubject());
-//        Assertions.assertEquals("John Doe", node.claimString("name"));
-//        Assertions.assertEquals(1516239022, node.claimInt("iat"));
-//        System.out.println("HS512 jwt.io example - pass");
-//    }
+
 //
 //    @Test
 //    @DisplayName("[Java] PS256 check jwt.io example")

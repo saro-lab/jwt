@@ -92,7 +92,7 @@ open class JwtNode internal constructor(
         return key.verify(jwtBody, jwtSignature)
     }
 
-    fun toBuilder(key: JwtKey): Builder = Builder(header.toMutableMap(), payload.toMutableMap())
+    fun toBuilder(): Builder = Builder(header.toMutableMap(), payload.toMutableMap())
 
     class Builder(
         override val header: MutableMap<String, String> = mutableMapOf("typ" to "JWT"),
