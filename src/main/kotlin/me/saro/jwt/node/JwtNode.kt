@@ -13,6 +13,8 @@ open class JwtNode private constructor(
     private val jwtBody: ByteArray = jwt.copyOfRange(0, lastDot)
     private val jwtSignature: ByteArray = jwt.copyOfRange(lastDot + 1, jwt.size)
 
+    val algorithm: String = header["alg"] ?: ""
+
     fun verify(key: JwtVerifyKey): Boolean {
         expire?.also {
             if (it.time < System.currentTimeMillis()) {

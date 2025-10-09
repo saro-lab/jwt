@@ -65,4 +65,8 @@ abstract class JwtReaderSpec(
     val issuedAtEpochSecond: Long? get() = claimDateByEpochSecond("iat")
     val expire: Date? get() = claimDateByTimestamp("exp")
     val expireEpochSecond: Long? get() = claimDateByEpochSecond("exp")
+
+    override fun toString(): String {
+        return "$header, $payload"
+    }
 }

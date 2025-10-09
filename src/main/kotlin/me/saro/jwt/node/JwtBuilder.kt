@@ -43,10 +43,12 @@ class JwtBuilder(
     fun expire(date: ZonedDateTime): JwtBuilder = expire(date.toEpochSecond())
 
     fun build(key: JwtSignatureKey): String {
+        header("alg", key.algorithm.name)
+
         val jwt = ByteArrayOutputStream(2000)
-        jwt.write(JwtUtils.Companion.encodeToBase64UrlWop(JwtUtils.Companion.writeValueAsBytes(header)))
+        jwt.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(header)))
         jwt.write(DOT_INT)
-        jwt.write(JwtUtils.Companion.encodeToBase64UrlWop(JwtUtils.Companion.writeValueAsBytes(payload)))
+        jwt.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(payload)))
 
         val signature = key.createSignature(jwt.toByteArray())
         jwt.write(DOT_INT)
