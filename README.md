@@ -9,7 +9,7 @@
 
 ## Gradle
 ```
-implementation('me.saro:jwt:6.0.1')
+implementation('me.saro:jwt:7.0.0')
 ```
 
 ## Maven
@@ -17,7 +17,7 @@ implementation('me.saro:jwt:6.0.1')
 <dependency>
   <groupId>me.saro</groupId>
   <artifactId>jwt</artifactId>
-  <version>6.0.1</version>
+  <version>7.0.0</version>
 </dependency>
 ```
 

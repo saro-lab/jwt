@@ -1,3 +1,7 @@
+import java.net.HttpURLConnection
+import java.net.URI
+import java.util.*
+
 plugins {
 	id("org.jetbrains.kotlin.jvm") version "2.2.20"
 	id("org.ec4j.editorconfig") version "0.1.0"
@@ -53,9 +57,8 @@ publishing {
 							println("warn: " + e.message)
 						}
 					}
-					val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
-					val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-					url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                    name = "ossrh-staging-api"
+                    url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
 				}
 			}
 
@@ -84,6 +87,25 @@ publishing {
 			}
 		}
 	}
+}
+
+tasks.named("publish").configure {
+    doLast {
+        val username = project.property("sonatype.username").toString()
+        val password = project.property("sonatype.password").toString()
+        val connection = URI.create("https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/$jwtGroupId").toURL().openConnection() as HttpURLConnection
+        connection.requestMethod = "POST"
+        connection.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString("$username:$password".toByteArray()))
+        connection.setRequestProperty("Content-Type", "application/json")
+        connection.doOutput = true
+        connection.outputStream.write("""{"publishing_type": "automatic"}""".toByteArray())
+        val responseCode = connection.responseCode
+        if (responseCode in 200..299) {
+            println("Successfully uploaded to Central Portal")
+        } else {
+            throw GradleException("Failed to upload to Central Portal: $responseCode - ${connection.inputStream?.bufferedReader()?.readText()}")
+        }
+    }
 }
 
 signing {
