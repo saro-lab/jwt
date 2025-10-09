@@ -1,12 +1,12 @@
 package me.saro.jwt.java;
 
 
-import me.saro.jwt.node.Jwt;
-import me.saro.jwt.node.JwtNode;
 import me.saro.jwt.key.JwtHashKey;
 import me.saro.jwt.key.JwtKey;
 import me.saro.jwt.key.JwtPairPrivateKey;
 import me.saro.jwt.key.JwtPairPublicKey;
+import me.saro.jwt.node.Jwt;
+import me.saro.jwt.node.JwtNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

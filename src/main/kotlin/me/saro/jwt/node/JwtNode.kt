@@ -15,19 +15,26 @@ open class JwtNode private constructor(
 
     val algorithm: String = header["alg"] ?: ""
 
-    fun verify(key: JwtVerifyKey): Boolean {
-        expire?.also {
-            if (it.time < System.currentTimeMillis()) {
-                return false
-            }
+    fun verify(key: JwtVerifyKey?): Boolean {
+        if (key != null) {
+            try {
+                expire?.also {
+                    if (it.time < System.currentTimeMillis()) {
+                        return false
+                    }
+                }
+                notBefore?.also {
+                    if (it.time > System.currentTimeMillis()) {
+                        return false
+                    }
+                }
+                return key.verify(jwtBody, jwtSignature)
+            } catch (e: Exception) { }
         }
-        notBefore?.also {
-            if (it.time > System.currentTimeMillis()) {
-                return false
-            }
-        }
-        return key.verify(jwtBody, jwtSignature)
+        return false
     }
+    fun verify(key: (kid: String?) -> JwtVerifyKey): Boolean =
+        verify(key(kid))
 
     fun toBuilder(): JwtBuilder = JwtBuilder(header.toMutableMap(), payload.toMutableMap())
 

@@ -1,5 +1,6 @@
 package me.saro.jwt.node
 
+import me.saro.jwt.key.JwtAlgorithm
 import me.saro.jwt.key.JwtSignatureKey
 import me.saro.jwt.node.JwtUtils.Companion.DOT_INT
 import java.io.ByteArrayOutputStream
@@ -42,19 +43,19 @@ class JwtBuilder(
     fun expire(date: OffsetDateTime): JwtBuilder = expire(date.toEpochSecond())
     fun expire(date: ZonedDateTime): JwtBuilder = expire(date.toEpochSecond())
 
-    fun build(key: JwtSignatureKey): String {
-        header("alg", key.algorithm.name)
+    fun build(key: JwtSignatureKey): String =
+        build(key.algorithm, key::createSignature)
 
-        val jwt = ByteArrayOutputStream(2000)
-        jwt.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(header)))
-        jwt.write(DOT_INT)
-        jwt.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(payload)))
-
-        val signature = key.createSignature(jwt.toByteArray())
-        jwt.write(DOT_INT)
-        jwt.write(signature)
-
-        return String(jwt.toByteArray())
+    fun build(algorithm: JwtAlgorithm, signature: (body: ByteArray) -> ByteArray): String {
+        header("alg", algorithm.name)
+        val bs = ByteArrayOutputStream(2000)
+        bs.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(header)))
+        bs.write(DOT_INT)
+        bs.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(payload)))
+        val sign = signature(bs.toByteArray())
+        bs.write(DOT_INT)
+        bs.write(sign)
+        return String(bs.toByteArray())
     }
 
     override fun toString(): String {
