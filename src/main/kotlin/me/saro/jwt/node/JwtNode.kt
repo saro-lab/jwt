@@ -9,7 +9,7 @@ open class JwtNode private constructor(
     jwt: ByteArray = ByteArray(0),
     firstDot: Int = -1,
     lastDot: Int = -1,
-): JwtNodeReader(header, payload) {
+): JwtReaderSpec(header, payload) {
     private val jwtBody: ByteArray = jwt.copyOfRange(0, lastDot)
     private val jwtSignature: ByteArray = jwt.copyOfRange(lastDot + 1, jwt.size)
 
@@ -27,7 +27,7 @@ open class JwtNode private constructor(
         return key.verify(jwtBody, jwtSignature)
     }
 
-    fun toBuilder(): JwtNodeBuilder = JwtNodeBuilder(header.toMutableMap(), payload.toMutableMap())
+    fun toBuilder(): JwtBuilder = JwtBuilder(header.toMutableMap(), payload.toMutableMap())
 
     companion object {
         @JvmStatic

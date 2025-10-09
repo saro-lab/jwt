@@ -5,7 +5,7 @@ import me.saro.jwt.node.JwtUtils.Companion.REGEX_FALSE
 import me.saro.jwt.node.JwtUtils.Companion.REGEX_TRUE
 import java.util.*
 
-abstract class JwtNodeReader(
+abstract class JwtReaderSpec(
     open val header: Map<String, String>,
     open val payload: Map<String, Any>,
 ) {

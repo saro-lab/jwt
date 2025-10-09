@@ -1,11 +1,8 @@
 //package me.saro.jwt.java;
 //
-//import me.saro.jwt.old.Jwt;
-//import me.saro.jwt.old.JwtKey;
-//import me.saro.jwt.old.JwtNode;
-//import me.saro.jwt.old.exception.JwtException;
-//import me.saro.jwt.old.exception.JwtExceptionCode;
+//import me.saro.jwt.key.JwtKey;
 //import org.junit.jupiter.api.*;
+//import static me.saro.jwt.key.JwtAlgorithm.*;
 //
 //import java.time.OffsetDateTime;
 //import java.util.ArrayList;
@@ -27,57 +24,58 @@
 //        long start = System.currentTimeMillis();
 //
 //        // HS Algorithm
-//        createKeyList.add(Jwt.HS256.newRandomKey());
-//        createKeyList.add(Jwt.HS256.newRandomJwtKey(20));
-//        createKeyList.add(Jwt.HS256.newRandomJwtKey(10, 40));
-//        createKeyList.add(Jwt.HS256.toKeyByText("HS256_4_key"));
-//        createKeyList.add(Jwt.HS384.newRandomKey());
-//        createKeyList.add(Jwt.HS384.newRandomJwtKey(20));
-//        createKeyList.add(Jwt.HS384.newRandomJwtKey(10, 40));
-//        createKeyList.add(Jwt.HS384.toKeyByText("HS384_4_key"));
-//        createKeyList.add(Jwt.HS512.newRandomKey());
-//        createKeyList.add(Jwt.HS512.newRandomJwtKey(20));
-//        createKeyList.add(Jwt.HS512.newRandomJwtKey(10, 40));
-//        createKeyList.add(Jwt.HS512.toKeyByText("HS512_4_key"));
+//        )
+//        createKeyList.add(JwtKey.generateHash(HS256.newRandomKey());
+//        createKeyList.add(HS256.newRandomJwtKey(20));
+//        createKeyList.add(HS256.newRandomJwtKey(10, 40));
+//        createKeyList.add(HS256.toKeyByText("HS256_4_key"));
+//        createKeyList.add(HS384.newRandomKey());
+//        createKeyList.add(HS384.newRandomJwtKey(20));
+//        createKeyList.add(HS384.newRandomJwtKey(10, 40));
+//        createKeyList.add(HS384.toKeyByText("HS384_4_key"));
+//        createKeyList.add(HS512.newRandomKey());
+//        createKeyList.add(HS512.newRandomJwtKey(20));
+//        createKeyList.add(HS512.newRandomJwtKey(10, 40));
+//        createKeyList.add(HS512.toKeyByText("HS512_4_key"));
 //
 //        // ES Algorithm
-//        createKeyList.add(Jwt.ES256.newRandomKey());
-//        createKeyList.add(Jwt.ES256.newRandomKey());
-//        createKeyList.add(Jwt.ES256.newRandomKey());
-//        createKeyList.add(Jwt.ES384.newRandomKey());
-//        createKeyList.add(Jwt.ES384.newRandomKey());
-//        createKeyList.add(Jwt.ES384.newRandomKey());
-//        createKeyList.add(Jwt.ES512.newRandomKey());
-//        createKeyList.add(Jwt.ES512.newRandomKey());
-//        createKeyList.add(Jwt.ES512.newRandomKey());
+//        createKeyList.add(ES256.newRandomKey());
+//        createKeyList.add(ES256.newRandomKey());
+//        createKeyList.add(ES256.newRandomKey());
+//        createKeyList.add(ES384.newRandomKey());
+//        createKeyList.add(ES384.newRandomKey());
+//        createKeyList.add(ES384.newRandomKey());
+//        createKeyList.add(ES512.newRandomKey());
+//        createKeyList.add(ES512.newRandomKey());
+//        createKeyList.add(ES512.newRandomKey());
 //
 //        // PS Algorithm
-//        createKeyList.add(Jwt.PS256.newRandomKey());
-//        createKeyList.add(Jwt.PS256.newRandomJwtKey(2048));
-//        createKeyList.add(Jwt.PS256.newRandomJwtKey(3072));
-//        createKeyList.add(Jwt.PS256.newRandomJwtKey(4096));
-//        createKeyList.add(Jwt.PS384.newRandomKey());
-//        createKeyList.add(Jwt.PS384.newRandomJwtKey(2048));
-//        createKeyList.add(Jwt.PS384.newRandomJwtKey(3072));
-//        createKeyList.add(Jwt.PS384.newRandomJwtKey(4096));
-//        createKeyList.add(Jwt.PS512.newRandomKey());
-//        createKeyList.add(Jwt.PS512.newRandomJwtKey(2048));
-//        createKeyList.add(Jwt.PS512.newRandomJwtKey(3072));
-//        createKeyList.add(Jwt.PS512.newRandomJwtKey(4096));
+//        createKeyList.add(PS256.newRandomKey());
+//        createKeyList.add(PS256.newRandomJwtKey(2048));
+//        createKeyList.add(PS256.newRandomJwtKey(3072));
+//        createKeyList.add(PS256.newRandomJwtKey(4096));
+//        createKeyList.add(PS384.newRandomKey());
+//        createKeyList.add(PS384.newRandomJwtKey(2048));
+//        createKeyList.add(PS384.newRandomJwtKey(3072));
+//        createKeyList.add(PS384.newRandomJwtKey(4096));
+//        createKeyList.add(PS512.newRandomKey());
+//        createKeyList.add(PS512.newRandomJwtKey(2048));
+//        createKeyList.add(PS512.newRandomJwtKey(3072));
+//        createKeyList.add(PS512.newRandomJwtKey(4096));
 //
 //        // RS Algorithm
-//        createKeyList.add(Jwt.RS256.newRandomKey());
-//        createKeyList.add(Jwt.RS256.newRandomJwtKey(2048));
-//        createKeyList.add(Jwt.RS256.newRandomJwtKey(3072));
-//        createKeyList.add(Jwt.RS256.newRandomJwtKey(4096));
-//        createKeyList.add(Jwt.RS384.newRandomKey());
-//        createKeyList.add(Jwt.RS384.newRandomJwtKey(2048));
-//        createKeyList.add(Jwt.RS384.newRandomJwtKey(3072));
-//        createKeyList.add(Jwt.RS384.newRandomJwtKey(4096));
-//        createKeyList.add(Jwt.RS512.newRandomKey());
-//        createKeyList.add(Jwt.RS512.newRandomJwtKey(2048));
-//        createKeyList.add(Jwt.RS512.newRandomJwtKey(3072));
-//        createKeyList.add(Jwt.RS512.newRandomJwtKey(4096));
+//        createKeyList.add(RS256.newRandomKey());
+//        createKeyList.add(RS256.newRandomJwtKey(2048));
+//        createKeyList.add(RS256.newRandomJwtKey(3072));
+//        createKeyList.add(RS256.newRandomJwtKey(4096));
+//        createKeyList.add(RS384.newRandomKey());
+//        createKeyList.add(RS384.newRandomJwtKey(2048));
+//        createKeyList.add(RS384.newRandomJwtKey(3072));
+//        createKeyList.add(RS384.newRandomJwtKey(4096));
+//        createKeyList.add(RS512.newRandomKey());
+//        createKeyList.add(RS512.newRandomJwtKey(2048));
+//        createKeyList.add(RS512.newRandomJwtKey(3072));
+//        createKeyList.add(RS512.newRandomJwtKey(4096));
 //
 //        Assertions.assertEquals(45, createKeyList.size());
 //        System.out.println("create " + createKeyList.size() + " keys - " + (System.currentTimeMillis() - start) + "ms");
@@ -105,7 +103,7 @@
 //
 //        long start = System.currentTimeMillis();
 //
-//        stringKeyList.forEach((key) -> convertKeyList.add(Jwt.parseKey(key)));
+//        stringKeyList.forEach((key) -> convertKeyList.add(parseKey(key)));
 //
 //        Assertions.assertEquals(45, convertKeyList.size());
 //
@@ -121,10 +119,10 @@
 //        long start = System.currentTimeMillis();
 //
 //        createKeyList.forEach((key) -> {
-//            String jwt = Jwt.createJwt(key)
+//            String jwt = createJwt(key)
 //                    .expire(OffsetDateTime.now().minusMinutes(1))
 //                    .build();
-//            JwtException exception = Assertions.assertThrows(JwtException.class, () -> Jwt.parseJwt(jwt, convertKeyList));
+//            JwtException exception = Assertions.assertThrows(JwtException.class, () -> parseJwt(jwt, convertKeyList));
 //            Assertions.assertEquals(JwtExceptionCode.DATE_EXPIRED, exception.getCode());
 //        });
 //
@@ -139,10 +137,10 @@
 //        long start = System.currentTimeMillis();
 //
 //        createKeyList.forEach((key) -> {
-//            String jwt = Jwt.createJwt(key)
+//            String jwt = createJwt(key)
 //                    .notBefore(OffsetDateTime.now().plusDays(1))
 //                    .build();
-//            JwtException exception = Assertions.assertThrows(JwtException.class, () -> Jwt.parseJwt(jwt, convertKeyList));
+//            JwtException exception = Assertions.assertThrows(JwtException.class, () -> parseJwt(jwt, convertKeyList));
 //            Assertions.assertEquals(JwtExceptionCode.DATE_BEFORE, exception.getCode());
 //        });
 //
@@ -157,9 +155,9 @@
 //        long start = System.currentTimeMillis();
 //
 //        createKeyList.forEach(key -> {
-//            String jwt = Jwt.createJwt(key)
+//            String jwt = createJwt(key)
 //                    .build();
-//            JwtNode node = Assertions.assertDoesNotThrow(() -> Jwt.parseJwt(jwt, convertKeyList));
+//            JwtNode node = Assertions.assertDoesNotThrow(() -> parseJwt(jwt, convertKeyList));
 //            Assertions.assertEquals(key.getKid(), node.getKid());
 //        });
 //
@@ -192,7 +190,7 @@
 //        long expire = OffsetDateTime.now().plusHours(1).toEpochSecond();
 //
 //        createKeyList.forEach(key -> {
-//            String jwt = Jwt.createJwt(key)
+//            String jwt = createJwt(key)
 //                    .issuer(issuer)
 //                    .subject(subject)
 //                    .audience(audience)
@@ -212,7 +210,7 @@
 //                    .notBefore(notBefore)
 //                    .expire(expire)
 //                    .build();
-//            JwtNode node = Assertions.assertDoesNotThrow(() -> Jwt.parseJwt(jwt, convertKeyList));
+//            JwtNode node = Assertions.assertDoesNotThrow(() -> parseJwt(jwt, convertKeyList));
 //            Assertions.assertEquals(key.getKid(), node.getKid());
 //            Assertions.assertEquals(key.getAlgorithm().getAlgorithmFullName(), node.getAlgorithm());
 //            Assertions.assertEquals(issuer, node.getIssuer());
