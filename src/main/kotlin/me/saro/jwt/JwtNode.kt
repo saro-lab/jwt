@@ -1,5 +1,8 @@
 package me.saro.jwt
 
+import me.saro.jwt.JwtUtils.Companion.decodeBase64Url
+import me.saro.jwt.JwtUtils.Companion.readMap
+import me.saro.jwt.JwtUtils.Companion.readTextMap
 import me.saro.jwt.exception.JwtIllegalArgumentException
 import me.saro.jwt.key.JwtKey
 import me.saro.jwt.key.JwtSignatureKey
@@ -149,5 +152,32 @@ open class JwtNode internal constructor(
         private const val DOT_INT: Int = '.'.code
         private val REGEX_TRUE: Regex = Regex("true|yes|y|on|1|o", RegexOption.IGNORE_CASE)
         private val REGEX_FALSE: Regex = Regex("false|no|n|not|off|0|x", RegexOption.IGNORE_CASE)
+
+        @JvmStatic
+        fun parsePair(jwt: String): Pair<JwtNode?, String?> {
+            val jwtByte: ByteArray = jwt.toByteArray()
+            val firstDot: Int = jwtByte.indexOf(DOT_BYTE)
+            val lastDot: Int = jwtByte.lastIndexOf(DOT_BYTE)
+
+            // firstDot must be not -1
+            // lastDot must be not -1 and firstDot must be less than lastDot
+            if (firstDot == lastDot) {
+                return Pair(null, null)
+            }
+
+            val header: Map<String, String> = try {
+                readTextMap(decodeBase64Url(jwtByte.copyOfRange(0, firstDot)))
+            } catch (e: Exception) {
+                return Pair(null, "$jwt invalid jwt header")
+            }
+
+            val payload: Map<String, Any> = try {
+                readMap(decodeBase64Url(jwtByte.copyOfRange(firstDot + 1, lastDot)));
+            } catch (e: Exception) {
+                return Pair(null, "$jwt invalid jwt payload")
+            }
+
+            return Pair(JwtNode(header, payload, jwtByte, firstDot, lastDot), null)
+        }
     }
 }
