@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jsonMapper
 import java.time.Duration
 import java.util.*
 
-class JwtUtil {
+class JwtUtils {
     companion object {
         private val OBJECT_MAPPER: ObjectMapper = jsonMapper()
         private val DE_BASE64_URL: Base64.Decoder = Base64.getUrlDecoder()

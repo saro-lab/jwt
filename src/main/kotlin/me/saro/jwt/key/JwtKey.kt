@@ -1,10 +1,10 @@
 package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtUtil
-import me.saro.jwt.JwtUtil.Companion.decodeBase64
-import me.saro.jwt.JwtUtil.Companion.decodeHex
-import me.saro.jwt.JwtUtil.Companion.normalizePem
+import me.saro.jwt.JwtUtils
+import me.saro.jwt.JwtUtils.Companion.decodeBase64
+import me.saro.jwt.JwtUtils.Companion.decodeHex
+import me.saro.jwt.JwtUtils.Companion.normalizePem
 import java.security.Key
 import java.util.*
 
@@ -12,8 +12,8 @@ interface JwtKey {
     val algorithm: JwtAlgorithm
     val key: Key
     fun toBytes(): ByteArray = key.encoded
-    fun toBase64(): String = JwtUtil.encodeToBase64String(toBytes())
-    fun toHex(): String = JwtUtil.encodeHex(toBytes())
+    fun toBase64(): String = JwtUtils.encodeToBase64String(toBytes())
+    fun toHex(): String = JwtUtils.encodeHex(toBytes())
 
     companion object {
         // hash key

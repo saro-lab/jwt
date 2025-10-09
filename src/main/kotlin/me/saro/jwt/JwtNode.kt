@@ -128,9 +128,9 @@ open class JwtNode internal constructor(
 
         fun build(key: JwtSignatureKey): String {
             val jwt = ByteArrayOutputStream(2000)
-            jwt.write(JwtUtil.Companion.encodeToBase64UrlWop(JwtUtil.Companion.writeValueAsBytes(header)))
+            jwt.write(JwtUtils.Companion.encodeToBase64UrlWop(JwtUtils.Companion.writeValueAsBytes(header)))
             jwt.write(DOT_INT)
-            jwt.write(JwtUtil.Companion.encodeToBase64UrlWop(JwtUtil.Companion.writeValueAsBytes(payload)))
+            jwt.write(JwtUtils.Companion.encodeToBase64UrlWop(JwtUtils.Companion.writeValueAsBytes(payload)))
 
             val signature = key.createSignature(jwt.toByteArray())
             jwt.write(DOT_INT)

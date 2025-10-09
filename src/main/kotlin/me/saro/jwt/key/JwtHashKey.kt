@@ -1,6 +1,7 @@
 package me.saro.jwt.key
 
 import me.saro.jwt.JwtAlgorithm
+import me.saro.jwt.JwtUtils
 import me.saro.jwt.exception.JwtIllegalArgumentException
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -18,7 +19,7 @@ class JwtHashKey private constructor(
     override fun createSignature(body: ByteArray): ByteArray {
         val mac: Mac = Mac.getInstance(key.algorithm)
         mac.init(key)
-        return mac.doFinal(body)
+        return JwtUtils.encodeToBase64UrlWop(mac.doFinal(body))
     }
 
     override fun verify(body: ByteArray, signature: ByteArray): Boolean =
