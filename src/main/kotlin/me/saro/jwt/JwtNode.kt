@@ -1,31 +1,24 @@
 package me.saro.jwt
 
-import me.saro.jwt.Jwt.Companion.decodeBase64Url
-import me.saro.jwt.Jwt.Companion.readMap
-import me.saro.jwt.Jwt.Companion.readTextMap
-import me.saro.jwt.exception.JwtParseException
+import me.saro.jwt.exception.JwtIllegalArgumentException
+import me.saro.jwt.key.JwtKey
+import me.saro.jwt.key.JwtSignatureKey
 import me.saro.jwt.key.JwtVerifyKey
-import me.saro.jwt.old.JwtKey
-import me.saro.jwt.old.JwtNode
-import me.saro.jwt.old.exception.JwtException
-import me.saro.jwt.old.exception.JwtExceptionCode
 import java.io.ByteArrayOutputStream
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
-import java.util.Date
+import java.util.*
 
 open class JwtNode internal constructor(
-    val algorithm: JwtAlgorithm,
-    val header: Map<String, String>,
-    val payload: Map<String, Any>,
-    val jwtByte: ByteArray,
-    firstDot: Int,
-    lastDot: Int,
+    open val header: Map<String, String>,
+    open val payload: Map<String, Any>,
+    jwt: ByteArray = ByteArray(0),
+    firstDot: Int = -1,
+    lastDot: Int = -1,
 ) {
     val kid: String? get() = header["kid"]
-
-    val jwtBody: ByteArray = jwtByte.copyOfRange(0, lastDot)
-    val jwtSignature: ByteArray = jwtByte.copyOfRange(lastDot + 1, jwtByte.size)
+    private val jwtBody: ByteArray = jwt.copyOfRange(0, lastDot)
+    private val jwtSignature: ByteArray = jwt.copyOfRange(lastDot + 1, jwt.size)
 
     @Suppress("UNCHECKED_CAST")
     fun <T> claim(key: String): T? = payload[key] as T?
@@ -42,7 +35,7 @@ open class JwtNode internal constructor(
             } else if (b.matches(REGEX_FALSE)) {
                 false
             } else {
-                throw JwtException(JwtExceptionCode.PARSE_ERROR, "claimBoolean only support ignoreCase(true|yes|y|on|1|o|false|no|n|not|off|0|x) : $b")
+                throw JwtIllegalArgumentException("claimBoolean only support ignoreCase(true|yes|y|on|1|o|false|no|n|not|off|0|x) : $b")
             }
         }
     }
@@ -96,20 +89,12 @@ open class JwtNode internal constructor(
         return key.verify(jwtBody, jwtSignature)
     }
 
-    fun cloneNewBuilder(key: JwtKey): Builder = Builder(key, header.toMutableMap(), payload.toMutableMap())
+    fun toBuilder(key: JwtKey): Builder = Builder(header.toMutableMap(), payload.toMutableMap())
 
     class Builder(
-        private val key: JwtKey,
-        override val header: MutableMap<String, String> = mutableMapOf(),
+        override val header: MutableMap<String, String> = mutableMapOf("typ" to "JWT"),
         override val payload: MutableMap<String, Any> = mutableMapOf(),
     ): JwtNode(header, payload) {
-
-        init {
-            header["typ"] = "JWT"
-            header["alg"] = key.algorithm.algorithmFullName
-            header["kid"] = key.kid
-        }
-
         fun header(key: String, value: String): Builder = this.apply { header[key] = value }
         fun kid(value: String): Builder = this.apply { header["kid"] = value }
 
@@ -141,13 +126,13 @@ open class JwtNode internal constructor(
         fun expire(date: OffsetDateTime): Builder = expire(date.toEpochSecond())
         fun expire(date: ZonedDateTime): Builder = expire(date.toEpochSecond())
 
-        fun build(): String {
+        fun build(key: JwtSignatureKey): String {
             val jwt = ByteArrayOutputStream(2000)
-            jwt.write(Jwt.Companion.encodeToBase64UrlWop(Jwt.Companion.writeValueAsBytes(header)))
+            jwt.write(JwtUtil.Companion.encodeToBase64UrlWop(JwtUtil.Companion.writeValueAsBytes(header)))
             jwt.write(DOT_INT)
-            jwt.write(Jwt.Companion.encodeToBase64UrlWop(Jwt.Companion.writeValueAsBytes(payload)))
+            jwt.write(JwtUtil.Companion.encodeToBase64UrlWop(JwtUtil.Companion.writeValueAsBytes(payload)))
 
-            val signature = key.signature(jwt.toByteArray())
+            val signature = key.createSignature(jwt.toByteArray())
             jwt.write(DOT_INT)
             jwt.write(signature)
 
@@ -164,42 +149,5 @@ open class JwtNode internal constructor(
         private const val DOT_INT: Int = '.'.code
         private val REGEX_TRUE: Regex = Regex("true|yes|y|on|1|o", RegexOption.IGNORE_CASE)
         private val REGEX_FALSE: Regex = Regex("false|no|n|not|off|0|x", RegexOption.IGNORE_CASE)
-
-        private fun parsePair(jwt: String): Pair<JwtNode?, String?> {
-            val jwtByte: ByteArray = jwt.toByteArray()
-            val firstDot: Int = jwtByte.indexOf(DOT_BYTE)
-            val lastDot: Int = jwtByte.lastIndexOf(DOT_BYTE)
-
-            // firstDot must be not -1
-            // lastDot must be not -1 and firstDot must be less than lastDot
-            if (firstDot == lastDot) {
-                return Pair(null, null)
-            }
-
-            val header: Map<String, String> = try {
-                readTextMap(decodeBase64Url(jwtByte.copyOfRange(0, firstDot)))
-            } catch (e: Exception) {
-                return Pair(null, "$jwt invalid jwt header")
-            }
-
-            val payload: Map<String, Any> = try {
-                readMap(decodeBase64Url(jwtByte.copyOfRange(firstDot + 1, lastDot)));
-            } catch (e: Exception) {
-                return Pair(null, "$jwt invalid jwt payload")
-            }
-
-            val alg: String = header["alg"]
-                ?: return Pair(null, "$jwt missing jwt algorithm")
-
-            val algorithm: JwtAlgorithm = try {
-                JwtAlgorithm.valueOf(alg)
-            } catch (e: IllegalArgumentException) {
-                return Pair(null, "$jwt not support $alg jwt algorithm")
-            }
-
-            return Pair(JwtNode(algorithm, header, payload, jwtByte, firstDot, lastDot), null)
-        }
-
-
     }
 }
