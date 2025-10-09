@@ -30,14 +30,14 @@ implementation('me.saro:jwt:7.0.0')
 
 
 ## Kotlin Example / Test Code
-- [ExampleSingleKeyTest.kt](src/test/kotlin/me/saro/jwt/kotlin/ExampleSingleKeyTest.kt)
-- [ExampleKeyStoreTest.kt](src/test/kotlin/me/saro/jwt/kotlin/ExampleKeyStoreTest.kt)
+- [SampleValidationTest.kt](src/test/kotlin/me/saro/jwt/kotlin/SampleValidationTest.kt)
+- [PerformanceTest.kt](src/test/kotlin/me/saro/jwt/kotlin/PerformanceTest.kt)
 - [AllTest.kt](src/test/kotlin/me/saro/jwt/kotlin/AllTest.kt)
 
 
 ## Java Example / Test Code
-- [ExampleSingleKeyTest.java](src/test/java/me/saro/jwt/java/ExampleSingleKeyTest.java)
-- [ExampleKeyStoreTest.java](src/test/java/me/saro/jwt/java/ExampleKeyStoreTest.java)
+- [SampleValidationTest.java](src/test/java/me/saro/jwt/java/SampleValidationTest.java)
+- [PerformanceTest.java](src/test/java/me/saro/jwt/java/PerformanceTest.java)
 - [AllTest.java](src/test/java/me/saro/jwt/java/AllTest.java)
 
 ## repository
