@@ -1,6 +1,5 @@
-package me.saro.jwt
+package me.saro.jwt.node
 
-import me.saro.jwt.JwtNode.Companion.parsePair
 import me.saro.jwt.exception.JwtParseException
 
 class Jwt {
@@ -8,11 +7,11 @@ class Jwt {
 
 
         @JvmStatic
-        fun parseOrNull(jwt: String): JwtNode? = parsePair(jwt).first
+        fun parseOrNull(jwt: String): JwtNode? = JwtNode.Companion.parsePair(jwt).first
 
         @JvmStatic
         fun parseOrThrow(jwt: String): JwtNode {
-            val pair = parsePair(jwt)
+            val pair = JwtNode.Companion.parsePair(jwt)
             if (pair.first != null) {
                 return pair.first!!
             } else {

@@ -1,10 +1,9 @@
 package me.saro.jwt.key
 
-import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtUtils
-import me.saro.jwt.JwtUtils.Companion.decodeBase64
-import me.saro.jwt.JwtUtils.Companion.decodeHex
-import me.saro.jwt.JwtUtils.Companion.normalizePem
+import me.saro.jwt.node.JwtUtils
+import me.saro.jwt.node.JwtUtils.Companion.decodeBase64
+import me.saro.jwt.node.JwtUtils.Companion.decodeHex
+import me.saro.jwt.node.JwtUtils.Companion.normalizePem
 import java.security.Key
 import java.util.*
 

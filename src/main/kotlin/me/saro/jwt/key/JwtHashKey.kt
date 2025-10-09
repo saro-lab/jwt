@@ -1,8 +1,7 @@
 package me.saro.jwt.key
 
-import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtUtils
 import me.saro.jwt.exception.JwtIllegalArgumentException
+import me.saro.jwt.node.JwtUtils
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 

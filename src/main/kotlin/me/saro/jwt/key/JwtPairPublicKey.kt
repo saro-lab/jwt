@@ -1,8 +1,7 @@
 package me.saro.jwt.key
 
-import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtUtils.Companion.decodeBase64Url
 import me.saro.jwt.exception.JwtIllegalArgumentException
+import me.saro.jwt.node.JwtUtils.Companion.decodeBase64Url
 import java.security.Key
 import java.security.PublicKey
 import java.security.Signature

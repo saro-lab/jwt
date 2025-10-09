@@ -1,19 +1,18 @@
 package me.saro.jwt.key
 
-import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtUtils.Companion.encodeToBase64UrlWop
 import me.saro.jwt.exception.JwtIllegalArgumentException
+import me.saro.jwt.node.JwtUtils.Companion.encodeToBase64UrlWop
 import java.security.Key
 import java.security.PrivateKey
 import java.security.Signature
-import java.security.spec.X509EncodedKeySpec
+import java.security.spec.PKCS8EncodedKeySpec
 
 class JwtPairPrivateKey(
     override val algorithm: JwtAlgorithm,
     override val key: Key,
 ): JwtPairKey(algorithm, key), JwtSignatureKey {
 
-    constructor(algorithm: JwtAlgorithm, key: ByteArray): this(algorithm, getKeyFactory(algorithm).generatePrivate(X509EncodedKeySpec(key)))
+    constructor(algorithm: JwtAlgorithm, key: ByteArray): this(algorithm, getKeyFactory(algorithm).generatePrivate(PKCS8EncodedKeySpec(key)))
 
     init {
         if (algorithm.keyType != "PAIR") {

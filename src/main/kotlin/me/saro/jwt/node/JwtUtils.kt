@@ -1,4 +1,4 @@
-package me.saro.jwt
+package me.saro.jwt.node
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -18,6 +18,10 @@ class JwtUtils {
         private val EN_BASE64 = Base64.getEncoder()
         private val EN_BASE64_URL_WOP: Base64.Encoder = Base64.getUrlEncoder().withoutPadding()
         private val REGEX_PEM_NORMALIZE = Regex("(\\s+|-----(BEGIN|END) .*?-----)")
+        internal const val DOT_BYTE: Byte = '.'.code.toByte()
+        internal const val DOT_INT: Int = '.'.code
+        internal val REGEX_TRUE: Regex = Regex("true|yes|y|on|1|o", RegexOption.IGNORE_CASE)
+        internal val REGEX_FALSE: Regex = Regex("false|no|n|not|off|0|x", RegexOption.IGNORE_CASE)
 
         @JvmStatic
         fun normalizePem(key: String): String = key.replace(REGEX_PEM_NORMALIZE, "")

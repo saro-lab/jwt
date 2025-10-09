@@ -1,8 +1,7 @@
 package me.saro.jwt.key
 
-import me.saro.jwt.JwtAlgorithm
-import me.saro.jwt.JwtAlgorithm.*
 import me.saro.jwt.exception.JwtIllegalArgumentException
+import me.saro.jwt.key.JwtAlgorithm.*
 import java.security.*
 import java.security.spec.ECGenParameterSpec
 import java.security.spec.MGF1ParameterSpec

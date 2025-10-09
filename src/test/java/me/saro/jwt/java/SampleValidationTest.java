@@ -1,8 +1,8 @@
 package me.saro.jwt.java;
 
 
-import me.saro.jwt.Jwt;
-import me.saro.jwt.JwtNode;
+import me.saro.jwt.node.Jwt;
+import me.saro.jwt.node.JwtNode;
 import me.saro.jwt.key.JwtHashKey;
 import me.saro.jwt.key.JwtKey;
 import me.saro.jwt.key.JwtPairPrivateKey;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static me.saro.jwt.JwtAlgorithm.*;
+import static me.saro.jwt.key.JwtAlgorithm.*;
 
 @DisplayName("[Java] Sample Validation Test - jwt.io")
 public class SampleValidationTest {
@@ -30,8 +30,6 @@ public class SampleValidationTest {
         Assertions.assertNotNull(node);
         Assertions.assertTrue(node.verify(trueKey));
         Assertions.assertFalse(node.verify(falseKey));
-        // out
-        System.out.println("HS256 jwt.io example - pass");
     }
 
     @Test
@@ -48,8 +46,6 @@ public class SampleValidationTest {
         Assertions.assertNotNull(node);
         Assertions.assertTrue(node.verify(trueKey));
         Assertions.assertFalse(node.verify(falseKey));
-        // out
-        System.out.println("HS384 jwt.io example - pass");
     }
 
     @Test
@@ -66,8 +62,6 @@ public class SampleValidationTest {
         Assertions.assertNotNull(node);
         Assertions.assertTrue(node.verify(trueKey));
         Assertions.assertFalse(node.verify(falseKey));
-        // out
-        System.out.println("HS512 jwt.io example - pass");
     }
 
     @Test
@@ -89,8 +83,49 @@ public class SampleValidationTest {
         // mix
         String newJwt = node.toBuilder().id("userId").build(jwtPrivateKey);
         Assertions.assertTrue(jwtPublicKey.verify(newJwt));
-        // out
-        System.out.println("ES256 jwt.io example - pass");
+    }
+
+    @Test
+    @DisplayName("[Java] ES384 check jwt.io example")
+    public void es384() {
+        String jwt = "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.VUPWQZuClnkFbaEKCsPy7CZVMh5wxbCSpaAWFLpnTe9J0--PzHNeTFNXCrVHysAa3eFbuzD8_bLSsgTKC8SzHxRVSj5eN86vBPo_1fNfE7SHTYhWowjY4E_wuiC13yoj";
+        String publicKey = "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEC1uWSXj2czCDwMTLWV5BFmwxdM6PX9p+Pk9Yf9rIf374m5XP1U8q79dBhLSIuaojsvOT39UUcPJROSD1FqYLued0rXiooIii1D3jaW6pmGVJFhodzC31cy5sfOYotrzF";
+        String privateKey = "MIG2AgEAMBAGByqGSM49AgEGBSuBBAAiBIGeMIGbAgEBBDCAHpFQ62QnGCEvYh/pE9QmR1C9aLcDItRbslbmhen/h1tt8AyMhskeenT+rAyyPhGhZANiAAQLW5ZJePZzMIPAxMtZXkEWbDF0zo9f2n4+T1h/2sh/fviblc/VTyrv10GEtIi5qiOy85Pf1RRw8lE5IPUWpgu553SteKigiKLUPeNpbqmYZUkWGh3MLfVzLmx85ii2vMU=";
+        JwtNode node = Jwt.parseOrNull(jwt);
+        JwtPairPublicKey jwtPublicKey = JwtKey.parsePairPublicByPem(ES384, publicKey);
+        JwtPairPrivateKey jwtPrivateKey = JwtKey.parsePairPrivateByPem(ES384, privateKey);
+
+        // text
+        Assertions.assertTrue(jwtPublicKey.verify(jwt));
+        Assertions.assertFalse(jwtPublicKey.verify("00000"+jwt.substring(5)));
+        // node
+        Assertions.assertNotNull(node);
+        Assertions.assertTrue(node.verify(jwtPublicKey));
+        // mix
+        String newJwt = node.toBuilder().id("userId").build(jwtPrivateKey);
+        Assertions.assertTrue(jwtPublicKey.verify(newJwt));
+    }
+
+    @Test
+    @DisplayName("[Java] ES512 check jwt.io example")
+    public void es512() {
+        String jwt = "eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.AbVUinMiT3J_03je8WTOIl-VdggzvoFgnOsdouAs-DLOtQzau9valrq-S6pETyi9Q18HH-EuwX49Q7m3KC0GuNBJAc9Tksulgsdq8GqwIqZqDKmG7hNmDzaQG1Dpdezn2qzv-otf3ZZe-qNOXUMRImGekfQFIuH_MjD2e8RZyww6lbZk";
+        String publicKey = "MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBgc4HZz+/fBbC7lmEww0AO3NK9wVZPDZ0VEnsaUFLEYpTzb90nITtJUcPUbvOsdZIZ1Q8fnbquAYgxXL5UgHMoywAib476MkyyYgPk0BXZq3mq4zImTRNuaU9slj9TVJ3ScT3L1bXwVuPJDzpr5GOFpaj+WwMAl8G7CqwoJOsW7Kddns=";
+        String privateKey = "MIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIBiyAa7aRHFDCh2qga9sTUGINE5jHAFnmM8xWeT/uni5I4tNqhV5Xx0pDrmCV9mbroFtfEa0XVfKuMAxxfZ6LM/yKhgYkDgYYABAGBzgdnP798FsLuWYTDDQA7c0r3BVk8NnRUSexpQUsRilPNv3SchO0lRw9Ru86x1khnVDx+duq4BiDFcvlSAcyjLACJvjvoyTLJiA+TQFdmrearjMiZNE25pT2yWP1NUndJxPcvVtfBW48kPOmvkY4WlqP5bAwCXwbsKrCgk6xbsp12ew==";
+        JwtNode node = Jwt.parseOrNull(jwt);
+        JwtPairPublicKey jwtPublicKey = JwtKey.parsePairPublicByPem(ES512, publicKey);
+        JwtPairPrivateKey jwtPrivateKey = JwtKey.parsePairPrivateByPem(ES512, privateKey);
+
+        // text
+        Assertions.assertTrue(jwtPublicKey.verify(jwt));
+        Assertions.assertFalse(jwtPublicKey.verify("00000"+jwt.substring(5)));
+        // node
+        Assertions.assertNotNull(node);
+        Assertions.assertTrue(node.verify(jwtPublicKey));
+        // mix
+        String newJwt = node.toBuilder().id("userId").build(jwtPrivateKey);
+        Assertions.assertTrue(jwtPublicKey.verify(newJwt));
     }
 
 }
+

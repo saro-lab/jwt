@@ -1,4 +1,4 @@
-package me.saro.jwt
+package me.saro.jwt.key
 
 enum class JwtAlgorithm(
     val algorithm: String,
