@@ -91,6 +91,7 @@ publishing {
 
 tasks.named("publish").configure {
     doLast {
+        println("Ready, upload to Central Portal")
         val username = project.property("sonatype.username").toString()
         val password = project.property("sonatype.password").toString()
         val connection = URI.create("https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/$jwtGroupId").toURL().openConnection() as HttpURLConnection
