@@ -85,5 +85,9 @@ class JwtUtils {
 
         @JvmStatic
         fun epochSecond(duration: Duration): Long = (System.currentTimeMillis() / 1000) + duration.seconds
+
+        @JvmStatic
+        fun <T, R> Pair<T?, R?>.orThrows(error: ((R?) -> Throwable)): T =
+            this.first ?: throw error(this.second)
     }
 }

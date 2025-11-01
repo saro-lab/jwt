@@ -2,6 +2,7 @@ package me.saro.jwt.java;
 
 import me.saro.jwt.key.*;
 import me.saro.jwt.node.Jwt;
+import me.saro.jwt.node.JwtBuilder;
 import me.saro.jwt.node.JwtNode;
 import org.junit.jupiter.api.*;
 
@@ -213,6 +214,38 @@ public class AllTest {
         }
 
         System.out.println("pass test - " + (System.currentTimeMillis() - start) + "ms");
+    }
+
+    @Test
+    @DisplayName("[Java] 08 builder test")
+    public void test08() {
+        JwtKeyPair key = JwtKey.generateKeyPair(ES256);
+        JwtBuilder builder = Jwt.builder().issuer("iss").subject("sub");
+        JwtBuilder b1 = Jwt.builderOrNull(builder.toBody());
+        Assertions.assertNotNull(b1);
+        JwtBuilder b2 = Jwt.builderOrNull(builder.toHeader(), null);
+        Assertions.assertNotNull(b2);
+        JwtBuilder b3 = Jwt.builderOrNull(null, builder.toPayload());
+        Assertions.assertNotNull(b3);
+
+        String jwt1 = b1.build(key.getPrivate());
+        String jwt2 = b2.build(key.getPrivate());
+        String jwt3 = b3.build(key.getPrivate());
+
+        System.out.println("jwt1: " + jwt1);
+        System.out.println("jwt2: " + jwt2);
+        System.out.println("jwt3: " + jwt3);
+
+        JwtNode node1 = Jwt.parseOrNull(jwt1);
+        JwtNode node2 = Jwt.parseOrNull(jwt2);
+        JwtNode node3 = Jwt.parseOrNull(jwt3);
+        Assertions.assertNotNull(node1);
+        Assertions.assertNotNull(node2);
+        Assertions.assertNotNull(node3);
+
+        System.out.println("node1: " + node1);
+        System.out.println("node2: " + node2);
+        System.out.println("node3: " + node3);
     }
 
 }

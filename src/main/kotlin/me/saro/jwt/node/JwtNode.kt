@@ -52,20 +52,13 @@ open class JwtNode private constructor(
             }
 
             val header: Map<String, String> = try {
-                JwtUtils.Companion.readTextMap(JwtUtils.Companion.decodeBase64Url(jwtByte.copyOfRange(0, firstDot)))
+                JwtUtils.readTextMap(JwtUtils.decodeBase64Url(jwtByte.copyOfRange(0, firstDot)))
             } catch (e: Exception) {
                 return Pair(null, "$jwt invalid jwt header")
             }
 
             val payload: Map<String, Any> = try {
-                JwtUtils.Companion.readMap(
-                    JwtUtils.Companion.decodeBase64Url(
-                        jwtByte.copyOfRange(
-                            firstDot + 1,
-                            lastDot
-                        )
-                    )
-                );
+                JwtUtils.readMap(JwtUtils.decodeBase64Url(jwtByte.copyOfRange(firstDot + 1, lastDot)))
             } catch (e: Exception) {
                 return Pair(null, "$jwt invalid jwt payload")
             }

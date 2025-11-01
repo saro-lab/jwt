@@ -2,6 +2,7 @@ package me.saro.jwt.node
 
 import me.saro.jwt.key.JwtAlgorithm
 import me.saro.jwt.key.JwtSignatureKey
+import me.saro.jwt.node.JwtUtils.Companion.DOT_BYTE
 import me.saro.jwt.node.JwtUtils.Companion.DOT_INT
 import java.io.ByteArrayOutputStream
 import java.time.OffsetDateTime
@@ -9,7 +10,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 class JwtBuilder(
-    override val header: MutableMap<String, String> = mutableMapOf("typ" to "JWT"),
+    override val header: MutableMap<String, String> = mutableMapOf(),
     override val payload: MutableMap<String, Any> = mutableMapOf(),
 ): JwtReaderSpec(header, payload) {
     fun header(key: String, value: String): JwtBuilder = this.apply { header[key] = value }
@@ -47,18 +48,53 @@ class JwtBuilder(
         build(key.algorithm, key::createSignature)
 
     fun build(algorithm: JwtAlgorithm, signature: (body: ByteArray) -> ByteArray): String {
+        header("typ", "JWT")
         header("alg", algorithm.name)
-        val bs = ByteArrayOutputStream(2000)
-        bs.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(header)))
-        bs.write(DOT_INT)
-        bs.write(JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(payload)))
+        val bs = bindBody(ByteArrayOutputStream(2000))
         val sign = signature(bs.toByteArray())
         bs.write(DOT_INT)
         bs.write(sign)
         return String(bs.toByteArray())
     }
 
+    fun bindBody(bs: ByteArrayOutputStream): ByteArrayOutputStream {
+        bs.write(toHeader())
+        bs.write(DOT_INT)
+        bs.write(toPayload())
+        return bs
+    }
+
+    fun toHeader(): ByteArray = JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(header))
+    fun toPayload(): ByteArray = JwtUtils.encodeToBase64UrlWop(JwtUtils.writeValueAsBytes(payload))
+
+    fun toBody(): ByteArray = bindBody(ByteArrayOutputStream(2000)).toByteArray()
+
     override fun toString(): String {
         return "$header.$payload"
+    }
+    
+    companion object {
+        @JvmStatic
+        fun parsePair(bodyWithoutSignature: ByteArray?): Pair<JwtBuilder?, String?> {
+            val jwtByte: ByteArray = bodyWithoutSignature
+                ?: return Pair(null, "body is blank")
+            val iof: Int = jwtByte.indexOf(DOT_BYTE)
+            if (iof > -1) {
+                return parsePair(jwtByte.copyOfRange(0, iof), jwtByte.copyOfRange(iof + 1, jwtByte.size))
+            }
+            return Pair(null, "$bodyWithoutSignature is invalid jwt body")
+        }
+
+        @JvmStatic
+        fun parsePair(headerToken: ByteArray?, bodyToken: ByteArray?): Pair<JwtBuilder?, String?> {
+            return try {
+                Pair(JwtBuilder(
+                    headerToken?.takeIf(ByteArray::isNotEmpty)?.let { JwtUtils.readTextMap(JwtUtils.decodeBase64Url(it)) } ?: mutableMapOf(),
+                    bodyToken?.takeIf(ByteArray::isNotEmpty)?.let { JwtUtils.readMap(JwtUtils.decodeBase64Url(it)) } ?: mutableMapOf()
+                ), null)
+            } catch (e: Exception) {
+                Pair(null, "$headerToken $bodyToken is invalid jwt body")
+            }
+        }
     }
 }

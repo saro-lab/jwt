@@ -8,6 +8,8 @@ import me.saro.jwt.key.JwtKey.Companion.parseHashByBase64
 import me.saro.jwt.key.JwtKey.Companion.parseHashByHex
 import me.saro.jwt.key.JwtKey.Companion.parseHashByText
 import me.saro.jwt.node.Jwt.Companion.builder
+import me.saro.jwt.node.Jwt.Companion.builderOrNull
+import me.saro.jwt.node.Jwt.Companion.parseOrNull
 import me.saro.jwt.node.Jwt.Companion.parseOrThrow
 import me.saro.jwt.node.JwtNode
 import org.junit.jupiter.api.*
@@ -288,5 +290,37 @@ class AllTest {
         }
 
         println("pass test - " + (System.currentTimeMillis() - start) + "ms")
+    }
+
+    @Test
+    @DisplayName("[Java] 08 builder test")
+    fun test08() {
+        val key = generateKeyPair(ES256)
+        val builder = builder().issuer("iss").subject("sub")
+        val b1 = builderOrNull(builder.toBody())
+        Assertions.assertNotNull(b1)
+        val b2 = builderOrNull(builder.toHeader(), null)
+        Assertions.assertNotNull(b2)
+        val b3 = builderOrNull(null, builder.toPayload())
+        Assertions.assertNotNull(b3)
+
+        val jwt1 = b1!!.build(key.private)
+        val jwt2 = b2!!.build(key.private)
+        val jwt3 = b3!!.build(key.private)
+
+        println("jwt1: $jwt1")
+        println("jwt2: $jwt2")
+        println("jwt3: $jwt3")
+
+        val node1 = parseOrNull(jwt1)
+        val node2 = parseOrNull(jwt2)
+        val node3 = parseOrNull(jwt3)
+        Assertions.assertNotNull(node1)
+        Assertions.assertNotNull(node2)
+        Assertions.assertNotNull(node3)
+
+        println("node1: $node1")
+        println("node2: $node2")
+        println("node3: $node3")
     }
 }
